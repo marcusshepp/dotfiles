@@ -127,7 +127,7 @@ alias ports='netstat -tulanp'
 alias delmi='find . -name "0*" -delete' # deletes migration files
 alias m='./manage.py'
 alias rs='./manage.py runserver'
-alias bootserver='echo "http://141.209.28.124:8000/"; ./manage.py runserver 0.0.0.0:8000'
+alias bootserver='echo "http://<current ip address>:8000/"; ./manage.py runserver 0.0.0.0:8000'
 
 # git
 alias a='git add . && git status'

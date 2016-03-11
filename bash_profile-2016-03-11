@@ -54,7 +54,7 @@ add(){
     echo "http://www.emoji-cheat-sheet.com/";
 }
 work(){
-    cd projects/$1/;
+    cd ~/projects/$1/;
     workon $1;
 }
 mkdotfile(){

@@ -38,6 +38,8 @@ alias lk='ls -1'
 
 alias f='open -a Finder ./'
 
+# recreate a new ssh key on mac os x
+alias new_ssh-key = "ssh-keygen -t rsa && cat ~/.ssh/id_rsa.pub"
 
 ## functions
 

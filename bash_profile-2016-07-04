@@ -41,6 +41,26 @@ alias f='open -a Finder ./'
 
 ## functions
 
+function pl() {
+	if [ $# -eq 1 ]; then
+		echo "Pulling origin/$1"
+	    git pull origin $1;
+	elif [ $# -gt 1 ] || [ $# -lt 1 ]; then
+		echo "ABORT: Incorrect number of branch args.";
+	fi
+}
+
+function ps() {
+	if [ $# -eq 1 ]; then
+		echo "Pushing origin/$1"
+	    git push origin $1;
+	elif [ $# -gt 1 ] || [ $# -lt 1 ]; then
+		echo "ABORT: Incorrect number of branch args.";
+	fi
+}
+
+
+
 mkmanagementcommand(){
     mkdir $1/management;
     touch $1/__init__.py;

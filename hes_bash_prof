@@ -1,0 +1,103 @@
+alias ls='ls -la'
+
+alias prof='vim ~/.bash_profile'
+alias xprof='source ~/.bash_profile'
+alias home='clear && cd ~'
+
+alias gl='gem list'
+
+alias c='clear'
+alias f='open -a Finder ./'
+
+# git
+alias add_ci='git add --all && git commit'
+alias psmaster='git push origin master'
+alias plmaster='git pull origin master'
+alias br="git branch"
+
+
+alias rs="runserver"
+
+# functions 
+function cd() { 
+	builtin cd "$@"; 
+	if [ -d ".git" ]; then
+		git status;
+	fi
+}
+
+function pl() {
+	# args: branch name
+	if [ $# -eq 1 ]; then
+		echo "Pulling origin/$1"
+	    git pull origin $1;
+	elif [ $# -gt 1 ] || [ $# -lt 1 ]; then
+		echo "ABORT: Incorrect number of branch args.";
+	fi
+}
+
+function ps() {
+	# args: branch name
+	if [ $# -eq 1 ]; then
+		echo "Pushing origin/$1"
+	    git push origin $1;
+	elif [ $# -gt 1 ] || [ $# -lt 1 ]; then
+		echo "ABORT: Incorrect number of branch args.";
+	fi
+}
+
+function forever_pull() {
+	# args: branch name
+	while true 
+	do
+		echo "pulling origin/$1"
+		output=$(git pull origin $1)
+		if [[ $output != *"Already up-to-date."* ]]
+		then
+			echo "foo"
+			break
+		fi
+	done
+}
+
+function co() {
+	# args: branch name
+	if [ $# -eq 1 ]; then
+		echo "checking out local/$1"
+		git checkout $1;
+	elif [ $# -gt 1 ] || [ $# -lt 1 ]; then
+		echo "ABORT: Incorrect number of branch args.";
+	fi
+}
+
+
+# Ruby Env
+runserver(){
+	ruby script/server; rails server;
+}
+rvm_use(){
+	rvm use 1.8.7@$1
+}
+
+rvm_new(){
+	rvm use 1.8.7@$1 --create
+}
+
+gem_in_v(){
+	gem install $1 -v $2 --no-ri --no-rdoc
+
+}
+
+gem_in(){
+    gem install $1 --no-ri --no-rdoc
+}
+
+ruby1(){
+	rvm use 1.8.7;
+}
+
+ruby2(){
+	rvm use 2.3.1;
+}
+
+source /Users/marcusshepherd/.rvm/scripts/rvm

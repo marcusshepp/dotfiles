@@ -1,5 +1,5 @@
 #!/bin/bash
 
-cp -f ~/.bashrc .
-cp -f ~/.config/nvim .
-cp -f ~/.tmux.conf .
+cp -rf ~/.bashrc .
+cp -rf ~/.config/nvim .
+cp -rf ~/.tmux.conf .

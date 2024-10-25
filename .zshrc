@@ -101,9 +101,9 @@ zipf () { zip -r "$1".zip "$1" ; }          # To create a ZIP archive of a folde
 #   mans:   Search manpage given in agument '1' for term given in argument '2' (case insensitive)
 #           displays paginated result with colored search terms and two lines surrounding each hit.             Example: mans mplayer codec
 #   --------------------------------------------------------------------
-    mans () {
-        man $1 | grep -iC2 --color=always $2 | less
-    }
+mans () {
+    man $1 | grep -iC2 --color=always $2 | less
+}
 
 alias du='du -kh'    # Makes a more readable output.
 alias df='df -kTh'

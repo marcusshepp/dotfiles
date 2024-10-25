@@ -1,6 +1,6 @@
 {
     "editor.fontFamily": "'DejaVu Sans Mono for Powerline'",
-    "editor.fontSize": 17,
+    "editor.fontSize": 11,
     "editor.stickyScroll.enabled": true,
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -14,9 +14,11 @@
     "security.workspace.trust.untrustedFiles": "open",
     "breadcrumbs.enabled": false,
     "window.title": "${activeRepositoryName}${separator}${activeEditorShort}${separator}${activeRepositoryBranchName}${dirty}",
+    "window.menuBarVisibility": "compact",
     "window.titleSeparator": " ~ ",
     "window.commandCenter": false,
     "window.customMenuBarAltFocus": false,
+    "window.zoomLevel": 4,
     "workbench.colorCustomizations": {
         "statusBar.background": "#000000",
         "statusBar.foreground": "#ffffff",
@@ -44,6 +46,7 @@
     "workbench.editor.editorActionsLocation": "hidden",
     "workbench.editor.showTabs": "none",
     "workbench.statusBar.visible": true,
+    "workbench.tree.indent": 15,
     "workbench.iconTheme": "material-icon-theme",
     "workbench.colorTheme": "Gruvbox Dark Soft",
     "workbench.layoutControl.enabled": false,

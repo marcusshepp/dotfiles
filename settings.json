@@ -14,10 +14,9 @@
     "security.workspace.trust.untrustedFiles": "open",
     "breadcrumbs.enabled": false,
     "window.title": "${activeRepositoryName}${separator}${activeEditorShort}${separator}${activeRepositoryBranchName}${dirty}",
-    "window.titleSeparator": " • ",
+    "window.titleSeparator": " ~ ",
     "window.commandCenter": false,
     "window.customMenuBarAltFocus": false,
-    "window.menuBarVisibility": "compact",
     "workbench.colorCustomizations": {
         "statusBar.background": "#000000",
         "statusBar.foreground": "#ffffff",
@@ -31,16 +30,23 @@
         "commandCenter.background": "#000000",
         "dropdown.background": "#000000",
         "titleBar.activeBackground": "#000000",
-        "titleBar.activeForeground": "#ffffff"
+        "titleBar.activeForeground": "#ffffff",
+        "tab.selectedBackground": "#000000",
+        "tab.selectedForeground": "#000000",
+        "tab.selectedBorderTop": "#000000",
+        "tab.inactiveBackground": "#000000",
+        "tab.inactiveForeground": "#fff",
+        "tab.activeBackground": "#000",
+        "tab.activeForeground": "#fff"
     },
     "workbench.activityBar.location": "hidden",
-    "workbench.editor.showTabs": "none",
     "workbench.editor.empty.hint": "hidden",
+    "workbench.editor.editorActionsLocation": "hidden",
+    "workbench.editor.showTabs": "none",
     "workbench.statusBar.visible": true,
     "workbench.iconTheme": "material-icon-theme",
     "workbench.colorTheme": "Gruvbox Dark Soft",
     "workbench.layoutControl.enabled": false,
-    "workbench.editor.editorActionsLocation": "hidden",
     "extensions.ignoreRecommendations": true,
     "typescript.updateImportsOnFileMove.enabled": "always",
     "javascript.updateImportsOnFileMove.enabled": "always",
@@ -70,19 +76,12 @@
     // vim
     "vim.leader": " ",
     "vim.highlightedyank.enable": true,
-    "vim.hlsearch": true,
-    "vim.sneak": true,
+    "vim.hlsearch": false,
     "vim.camelCaseMotion.enable": true,
+
+    // vim keybinds
     "vim.normalModeKeyBindings": [
-        // editor actions
-        {
-            "before": ["g", "r"],
-            "commands": ["editor.action.referenceSearch.trigger"]
-        },
-        {
-            "before": ["<leader>", "r"],
-            "commands": ["editor.action.rename"]
-        },
+        // workbench actions
         {
             "before": ["<leader>", "b"],
             "commands": ["workbench.action.navigateBack"]
@@ -98,6 +97,48 @@
         {
             "before": ["<leader>", "m"],
             "commands": ["workbench.action.parameterHints.trigger"]
+        },
+        {
+            "before": ["<leader>", "c"],
+            "commands": ["workbench.action.closeAllDocuments"]
+        },
+        {
+            "before": ["<leader>", "p"],
+            "commands": ["workbench.action.quickOpen"]
+        },
+        {
+            "before": ["<leader>", "o"],
+            "commands": ["workbench.action.gotoSymbol"]
+        },
+        {
+            "before": ["<leader>", "a"],
+            "commands": ["workbench.view.explorer"]
+        },
+        {
+            "before": ["<leader>", "s", "p"],
+            "commands": ["workbench.action.openSnippets"]
+        },
+        {
+            "before": ["<leader>", "0"],
+            "commands": ["workbench.action.openRecent"]
+        },
+
+        // editor actions
+        {
+            "before": ["g", "r"],
+            "commands": ["editor.action.referenceSearch.trigger"]
+        },
+        {
+            "before": ["<leader>", "r"],
+            "commands": ["editor.action.rename"]
+        },
+        {
+            "before": ["<leader>", "z"],
+            "commands": ["editor.toggleFold"]
+        },
+        {
+            "before": ["<leader>", "e"],
+            "commands": ["editor.action.marker.nextInFiles"]
         },
 
         // harpoon

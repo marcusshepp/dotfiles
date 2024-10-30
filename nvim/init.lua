@@ -345,6 +345,7 @@ if vim.g.vscode then
     vim.keymap.set({ 'n' }, "zg", fold.allMarkerRegion)
     vim.keymap.set({ 'n' }, "zG", fold.openAllMarkerRegion)
     vim.keymap.set({ 'n' }, "za", fold.toggle)
+    vim.keymap.set({ 'n' }, "ff", project.fuzzyFindFile)
     --#endregion keymap
 else
 end

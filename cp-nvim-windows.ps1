@@ -1,1 +1,1 @@
-copy-item -path "~\AppData\Local\nvim" -destination "~\p\dotfiles\win-nvim"
+copy-item -recurse -path  "~\AppData\Local\nvim" -destination "~\p\dotfiles\win-nvim"

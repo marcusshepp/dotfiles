@@ -214,6 +214,7 @@ alias v='nvim'
 alias py='python3'
 alias c='clear'
 alias done='git a -A;git ci;git ps;'
+alias nc='nvim ~/.config/nvim/init.lua'
 
 # function finish() {
 #   git a -A

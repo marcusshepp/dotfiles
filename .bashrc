@@ -123,10 +123,10 @@ export PATH="$PATH:/opt/nvim-linux64/bin"
 # for examples
 
 # If not running interactively, don't do anything
-case $- in
-*i*) ;;
-*) return ;;
-esac
+# case $- in
+# *i*) ;;
+# *) return ;;
+# esac
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -215,18 +215,18 @@ alias py='python3'
 alias c='clear'
 alias done='git a -A;git ci;git ps;'
 
-function finish() {
-  git a -A
-  git ci -m '${@}'
-  git ps
-}
+# function finish() {
+#   git a -A
+#   git ci -m '${@}'
+#   git ps
+# }
 
 . "$HOME/.cargo/env"
 
 # pnpm
-export PNPM_HOME="/home/marcusshep/.local/share/pnpm"
-case ":$PATH:" in
-*":$PNPM_HOME:"*) ;;
-*) export PATH="$PNPM_HOME:$PATH" ;;
-esac
+# export PNPM_HOME="/home/marcusshep/.local/share/pnpm"
+# case ":$PATH:" in
+# *":$PNPM_HOME:"*) ;;
+# *) export PATH="$PNPM_HOME:$PATH" ;;
+# esac
 # pnpm end

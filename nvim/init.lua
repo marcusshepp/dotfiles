@@ -70,28 +70,6 @@ require('lazy').setup({
     {
         "github/copilot.vim"
     },
-    -- {
-    --   "zbirenbaum/copilot.lua",
-    --   cmd = "Copilot",
-    --   build = ":Copilot auth",
-    --   event = "InsertEnter",
-    --   opts = {
-    --     suggestion = {
-    --       enabled = not vim.g.ai_cmp,
-    --       auto_trigger = true,
-    --             keymap = {
-    --                 accept = "<M-l>",
-    --                 next = "<M-]>",
-    --                 prev = "<M-[>",
-    --       },
-    --     },
-    --     panel = { enabled = false },
-    --     filetypes = {
-    --       markdown = true,
-    --       help = true,
-    --     },
-    --   },
-   -- }
     { "ellisonleao/gruvbox.nvim", priority = 1000 , config = true, opts = ...}
 }, {})
 
@@ -310,8 +288,9 @@ vim.cmd([[colorscheme gruvbox]])
 
         emmet_ls = {
             emmet = {
-                triggerExpansionOnTab = true,
+                triggerExpansionOnTab = false,
                 triggerExpansionOnEnter = true,
+                keyword_length = 5,
             },
         },
         lua_ls = {
@@ -370,24 +349,24 @@ vim.cmd([[colorscheme gruvbox]])
                 behavior = cmp.ConfirmBehavior.Replace,
                 select = true,
             },
-            ['<Tab>'] = cmp.mapping(function(fallback)
-                if cmp.visible() then
-                    cmp.select_next_item()
-                elseif luasnip.expand_or_jumpable() then
-                    luasnip.expand_or_jump()
-                else
-                    fallback()
-                end
-            end, { 'i', 's' }),
-            ['<S-Tab>'] = cmp.mapping(function(fallback)
-                if cmp.visible() then
-                    cmp.select_prev_item()
-                elseif luasnip.jumpable(-1) then
-                    luasnip.jump(-1)
-                else
-                    fallback()
-                end
-            end, { 'i', 's' }),
+            -- ['<Tab>'] = cmp.mapping(function(fallback)
+            --     if cmp.visible() then
+            --         cmp.select_next_item()
+            --     elseif luasnip.expand_or_jumpable() then
+            --         luasnip.expand_or_jump()
+            --     else
+            --         fallback()
+            --     end
+            -- end, { 'i', 's' }),
+            -- ['<S-Tab>'] = cmp.mapping(function(fallback)
+            --     if cmp.visible() then
+            --         cmp.select_prev_item()
+            --     elseif luasnip.jumpable(-1) then
+            --         luasnip.jump(-1)
+            --     else
+            --         fallback()
+            --     end
+            -- end, { 'i', 's' }),
         },
         sources = {
             { name = 'nvim_lsp', keyword_length = 4 },

@@ -4,7 +4,7 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-
+print("test")
 
 require('lazy').setup({
     'nvim-lualine/lualine.nvim', -- Fancier statusline
@@ -112,96 +112,11 @@ if vim.g.vscode then
     local vsc = require('vscode')
     vsc.notify('Let\'s get shit done\'')
 
-    local comment = {
-        selected = function()
-            vim.fn.VSCodeNotifyRange("editor.action.commentLine", vim.fn.line("v"), vim.fn.line("."), 1)
-        end
-    }
-
-    local file = {
-        new = function()
-            vim.fn.VSCodeNotify("workbench.explorer.fileView.focus")
-            vim.fn.VSCodeNotify("explorer.newFile")
-        end,
-
-        save = function()
-            vim.fn.VSCodeNotify("workbench.action.files.save")
-        end,
-
-        saveAll = function()
-            vim.fn.VSCodeNotify("workbench.action.files.saveAll")
-        end,
-
-        format = function()
-            vim.fn.VSCodeNotify("editor.action.formatDocument")
-        end,
-
-        showInExplorer = function()
-            vim.fn.VSCodeNotify("workbench.files.action.showActiveFileInExplorer")
-        end,
-
-        rename = function()
-            vim.fn.VSCodeNotify("workbench.files.action.showActiveFileInExplorer")
-            vim.fn.VSCodeNotify("renameFile")
-        end
-    }
-
-    local symbol = {
-        rename = function()
-            vim.fn.VSCodeNotify("editor.action.rename")
-        end,
-    }
-
-    local search = {
-        referenceTrigger = function()
-            vim.fn.VSCodeNotify("editor.action.referenceSearch.trigger")
-        end,
-        referenceInSideBar = function()
-            vim.fn.VSCodeNotify("references-view.find")
-        end,
-        project = function()
-            vim.fn.VSCodeNotify("editor.action.addSelectionToNextFindMatch")
-            vim.fn.VSCodeNotify("workbench.action.findInFiles")
-        end,
-        text = function()
-            vim.fn.VSCodeNotify("workbench.action.findInFiles")
-        end,
-    }
-
-    local project = {
-        fuzzyFindFile = function()
-            vim.fn.VSCodeNotify("workbench.action.quickOpen")
-        end,
-        explorer = function()
-            vim.fn.VSCodeNotify("workbench.view.explorer")
-        end,
-    }
-
-    --#region keymap
-    vim.keymap.set({ 'n', 'v' }, "<leader>/", comment.selected)
-    -- no highlight
-    vim.keymap.set({ 'n' }, "<leader>n", "<cmd>noh<cr>")
-
     -- project
-    vim.keymap.set({ 'n' }, "<leader>p", project.fuzzyFindFile)
-    vim.keymap.set({ 'n' }, "<leader>a", project.explorer)
-
-    -- file
-    vim.keymap.set({ 'n', 'v' }, "<space>w", file.save)
-    vim.keymap.set({ 'n', 'v' }, "<space>wa", file.saveAll)
-    vim.keymap.set({ 'n', 'v' }, "<space>fs", file.save)
-    vim.keymap.set({ 'n', 'v' }, "<space>fS", file.saveAll)
-    vim.keymap.set({ 'n' }, "<space>ff", file.format)
-    vim.keymap.set({ 'n' }, "<space>fn", file.new)
-    vim.keymap.set({ 'n' }, "<space>ft", file.showInExplorer)
-    vim.keymap.set({ 'n' }, "<space>fr", file.rename)
-    vim.keymap.set({ 'n' }, "<leader>rr", symbol.rename)
-
-    vim.keymap.set({ 'n' }, "gr", search.referenceTrigger)
-    vim.keymap.set({ 'n' }, "<leader>sR", search.referenceInSideBar)
-    vim.keymap.set({ 'n' }, "<leader>sp", search.project)
-
-    vim.keymap.set({ 'n' }, '<leader>ff', project.fuzzyFindFile)
+    -- vim.keymap.set({ 'n' }, "<leader>rr", vim.fn.VSCodeNotify("editor.action.rename"))
+    --
+    -- vim.keymap.set({ 'n' }, "gr", vim.fn.VSCodeNotify("editor.action.referenceSearch.trigger"))
+    -- vim.keymap.set({ 'n' }, '<leader>ff', vim.fn.VSCodeNotify("workbench.action.quickOpen"))
 else
 
     -- NEOVIM SPECIFIC ##############################
@@ -211,8 +126,8 @@ else
     -- require('zbirenbaum/copilot.lua').load()
     -- require('github/copilot.vim').setup({})
     -- require('github/copilot.vim').load()
-vim.o.background = "dark" -- or "light" for light mode
-vim.cmd([[colorscheme gruvbox]])
+    vim.o.background = "dark" -- or "light" for light mode
+    vim.cmd([[colorscheme gruvbox]])
 
     -- surround
     vim.keymap.set('i', '{', '{}<esc>i')
@@ -246,7 +161,7 @@ vim.cmd([[colorscheme gruvbox]])
             vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
         end
 
-        nmap('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+        nmap('<leader>rr', vim.lsp.buf.rename, '[R]e[n]ame')
         nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
         nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')

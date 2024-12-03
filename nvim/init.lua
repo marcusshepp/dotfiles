@@ -4,8 +4,6 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-print("test")
-
 require('lazy').setup({
     'nvim-lualine/lualine.nvim', -- Fancier statusline
     'nvim-telescope/telescope.nvim',
@@ -142,7 +140,17 @@ else
     vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
     vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
 
+    -- Marks
+    vim.keymap.set('n', '<leader>a', '\'A')
+    vim.keymap.set('n', '<leader>s', '\'S')
+    vim.keymap.set('n', '<leader>d', '\'D')
+    vim.keymap.set('n', '<leader>z', '\'Z')
+    vim.keymap.set('n', '<leader>x', '\'X')
+    vim.keymap.set('n', '<leader>c', '\'C')
 
+    -- New Lines
+    vim.keymap.set('n', '<leader>o', 'o<esc>')
+    vim.keymap.set('n', '<leader>O', 'O<esc>')
 
     -- LSP settings.
     --  This function gets run when an LSP connects to a particular buffer.

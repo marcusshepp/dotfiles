@@ -15,9 +15,10 @@
   "nvim-cmp": { "branch": "main", "commit": "ca4d3330d386e76967e53b85953c170658255ecb" },
   "nvim-lspconfig": { "branch": "master", "commit": "1aa9f36b6d542dafc0b4a38c48969d036003b00a" },
   "nvim-surround": { "branch": "main", "commit": "9f0cb495f25bff32c936062d85046fbda0c43517" },
-  "nvim-treesitter": { "branch": "master", "commit": "69170c93149ddb71a22bd954514806395c430c02" },
+  "nvim-treesitter": { "branch": "master", "commit": "b31188671d8a060022dbbeb6905019e69e310108" },
   "plenary.nvim": { "branch": "master", "commit": "2d9b06177a975543726ce5c73fca176cedbffe9d" },
   "roslyn.nvim": { "branch": "main", "commit": "17ab3fda128f4df577c1d792244ac4491513cc8f" },
   "telescope.nvim": { "branch": "master", "commit": "2eca9ba22002184ac05eddbe47a7fe2d5a384dfc" },
+  "tiny-inline-diagnostic.nvim": { "branch": "main", "commit": "cec1cee1e25bbb2cbc588d40a460953012595479" },
   "typescript-tools.nvim": { "branch": "master", "commit": "346062e8cd06e82776b60785a040dfbbdcb6de77" }
 }

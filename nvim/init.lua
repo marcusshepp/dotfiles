@@ -68,7 +68,15 @@ require('lazy').setup({
     {
         "github/copilot.vim"
     },
-    { "ellisonleao/gruvbox.nvim", priority = 1000 , config = true, opts = ...}
+    { "ellisonleao/gruvbox.nvim", priority = 1000 , config = true, opts = ...},
+    {
+        "rachartier/tiny-inline-diagnostic.nvim",
+        event = "VeryLazy", -- Or `LspAttach`
+        priority = 2000, -- needs to be loaded in first
+        config = function()
+            require('tiny-inline-diagnostic').setup()
+        end
+    }
 }, {})
 
 vim.g.mapleader = " "
@@ -86,7 +94,9 @@ vim.o.termguicolors = true
 vim.opt["tabstop"] = 4
 vim.opt["shiftwidth"] = 4
 vim.opt.relativenumber = true
---
+
+vim.diagnostic.config({ virtual_text = false })
+
 -- TELESCOPE
 local telescope = require('telescope.builtin')
 vim.keymap.set('n',
@@ -151,6 +161,9 @@ else
     -- New Lines
     vim.keymap.set('n', '<leader>o', 'o<esc>')
     vim.keymap.set('n', '<leader>O', 'O<esc>')
+
+    -- Format
+    vim.keymap.set('n', '<leader>=', 'gg=G<C-o>')
 
     -- LSP settings.
     --  This function gets run when an LSP connects to a particular buffer.

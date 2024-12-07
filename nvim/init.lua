@@ -4,6 +4,30 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- Diagnostic keymaps
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
+
+-- Marks
+vim.keymap.set('n', '<leader>a', '\'A')
+vim.keymap.set('n', '<leader>s', '\'S')
+vim.keymap.set('n', '<leader>d', '\'D')
+vim.keymap.set('n', '<leader>z', '\'Z')
+vim.keymap.set('n', '<leader>x', '\'X')
+vim.keymap.set('n', '<leader>c', '\'C')
+
+-- New Lines
+vim.keymap.set('n', '<leader>o', 'o<esc>')
+vim.keymap.set('n', '<leader>O', 'O<esc>')
+
+-- Format
+vim.keymap.set('n', '<leader>=', 'gg=G<C-o>')
+
+-- Replace entire buffer with content of register
+vim.keymap.set('n', '<leader>p', 'ggVG"*p')
+
 require('lazy').setup({
     'nvim-lualine/lualine.nvim', -- Fancier statusline
     'nvim-telescope/telescope.nvim',
@@ -51,24 +75,21 @@ require('lazy').setup({
             local configs = require("nvim-treesitter.configs")
 
             configs.setup({
-                ensure_installed = { "c", "lua", "vim", "vimdoc", "javascript", "html", "c_sharp" },
+                ensure_installed = { "c", "lua", "vim", "javascript", "html" },
                 sync_install = false,
                 highlight = { enable = true },
                 indent = { enable = true },
             })
         end
     },
+
     {
-        "seblj/roslyn.nvim",
-        ft = "cs",
-        opts = {
-            -- your configuration comes here; leave empty for default settings
-        }
+        "github/copilot.vim",
+        enabled = not vim.g.vscode,
     },
-    {
-        "github/copilot.vim"
-    },
+     
     { "ellisonleao/gruvbox.nvim", priority = 1000 , config = true, opts = ...},
+
     {
         "rachartier/tiny-inline-diagnostic.nvim",
         event = "VeryLazy", -- Or `LspAttach`
@@ -76,7 +97,55 @@ require('lazy').setup({
         config = function()
             require('tiny-inline-diagnostic').setup()
         end
+    },
+
+    {
+        "sphamba/smear-cursor.nvim",
+        opts = {},
+    },
+
+    {
+        "f-person/git-blame.nvim",
+        -- load the plugin at startup
+        event = "VeryLazy",
+        -- Because of the keys part, you will be lazy loading this plugin.
+        -- The plugin wil only load once one of the keys is used.
+        -- If you want to load the plugin at startup, add something like event = "VeryLazy",
+        -- or lazy = false. One of both options will work.
+        opts = {
+            -- your configuration comes here
+            -- for example
+            enabled = true,  -- if you want to enable the plugin
+            message_template = "<author> | <summary> • <date>", -- template for the blame message, check the Message template section for more options
+            date_format = "%m-%d-%Y %H:%M", -- template for the date, check Date format section for more options
+            virtual_text_column = 1,  -- virtual text start column, check Start virtual text at column section for more options
+        },
+
+    },
+
+    {
+        "mikavilpas/yazi.nvim",
+        event = "VeryLazy",
+        keys = {
+            {
+                "<leader>-",
+                "<cmd>Yazi<cr>",
+                desc = "Open yazi at the current file",
+            },
+            {
+                "<leader>cw",
+                "<cmd>Yazi cwd<cr>",
+                desc = "Open the file manager in nvim's working directory" ,
+            },
+        },
+        opts = {
+            open_for_directories = false,
+            keymaps = {
+                show_help = '<f1>',
+            },
+        },
     }
+
 }, {})
 
 vim.g.mapleader = " "
@@ -95,7 +164,7 @@ vim.opt["tabstop"] = 4
 vim.opt["shiftwidth"] = 4
 vim.opt.relativenumber = true
 
-vim.diagnostic.config({ virtual_text = false })
+-- vim.diagnostic.config({ virtual_text = false })
 
 -- TELESCOPE
 local telescope = require('telescope.builtin')
@@ -120,23 +189,32 @@ if vim.g.vscode then
     local vsc = require('vscode')
     vsc.notify('Let\'s get shit done\'')
 
-    -- project
-    -- vim.keymap.set({ 'n' }, "<leader>rr", vim.fn.VSCodeNotify("editor.action.rename"))
-    --
-    -- vim.keymap.set({ 'n' }, "gr", vim.fn.VSCodeNotify("editor.action.referenceSearch.trigger"))
-    -- vim.keymap.set({ 'n' }, '<leader>ff', vim.fn.VSCodeNotify("workbench.action.quickOpen"))
+    vim.keymap.set({ 'n' }, '<leader>rr',
+        function()
+            vim.fn.VSCodeNotify('editor.action.rename')
+        end,
+        { desc = 'vscode: rename symbol' })
+
+    vim.keymap.set({ 'n' }, 'gr',
+        function()
+            vim.fn.VSCodeNotify('editor.action.referenceSearch.trigger')
+        end, 
+        { desc = 'vscode: find references' })
+
+    vim.keymap.set({ 'n' }, '<leader>ff',
+        function()
+            vim.fn.VSCodeNotify('workbench.action.quickOpen')
+        end,
+        { desc = 'vscode: fzf' })
+
 else
 
     -- NEOVIM SPECIFIC ##############################
 
     vim.opt.signcolumn = 'no'
-    -- require("zbirenbaum/copilot.lua").setup()
-    -- require('zbirenbaum/copilot.lua').load()
-    -- require('github/copilot.vim').setup({})
-    -- require('github/copilot.vim').load()
-    vim.o.background = "dark" -- or "light" for light mode
+    vim.o.background = "dark"
+    -- vim.cmd.colorscheme = "gruvbox"
     vim.cmd([[colorscheme gruvbox]])
-
     -- surround
     vim.keymap.set('i', '{', '{}<esc>i')
     vim.keymap.set('i', '(', '()<esc>i')
@@ -144,26 +222,6 @@ else
     vim.keymap.set('i', '\'', '\'\'<esc>i')
     vim.keymap.set('i', '"', '""<esc>i')
 
-    -- Diagnostic keymaps
-    vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
-    vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
-    vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
-    vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
-
-    -- Marks
-    vim.keymap.set('n', '<leader>a', '\'A')
-    vim.keymap.set('n', '<leader>s', '\'S')
-    vim.keymap.set('n', '<leader>d', '\'D')
-    vim.keymap.set('n', '<leader>z', '\'Z')
-    vim.keymap.set('n', '<leader>x', '\'X')
-    vim.keymap.set('n', '<leader>c', '\'C')
-
-    -- New Lines
-    vim.keymap.set('n', '<leader>o', 'o<esc>')
-    vim.keymap.set('n', '<leader>O', 'O<esc>')
-
-    -- Format
-    vim.keymap.set('n', '<leader>=', 'gg=G<C-o>')
 
     -- LSP settings.
     --  This function gets run when an LSP connects to a particular buffer.
@@ -277,24 +335,6 @@ else
                 behavior = cmp.ConfirmBehavior.Replace,
                 select = true,
             },
-            -- ['<Tab>'] = cmp.mapping(function(fallback)
-            --     if cmp.visible() then
-            --         cmp.select_next_item()
-            --     elseif luasnip.expand_or_jumpable() then
-            --         luasnip.expand_or_jump()
-            --     else
-            --         fallback()
-            --     end
-            -- end, { 'i', 's' }),
-            -- ['<S-Tab>'] = cmp.mapping(function(fallback)
-            --     if cmp.visible() then
-            --         cmp.select_prev_item()
-            --     elseif luasnip.jumpable(-1) then
-            --         luasnip.jump(-1)
-            --     else
-            --         fallback()
-            --     end
-            -- end, { 'i', 's' }),
         },
         sources = {
             { name = 'nvim_lsp', keyword_length = 4 },

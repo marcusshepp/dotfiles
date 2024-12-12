@@ -4,6 +4,14 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+local function filename_first(_, path)
+	local tail = vim.fs.basename(path)
+	local parent = vim.fs.dirname(path)
+	if parent == "." then
+		return tail
+	end
+	return string.format("%s\t\t%s", tail, parent)
+end
 
 require('lazy').setup({
     'nvim-lualine/lualine.nvim', -- Fancier statusline
@@ -190,6 +198,16 @@ vim.keymap.set('n', '<leader>p', 'ggVG"*p')
 -- vim.diagnostic.config({ virtual_text = false })
 
 -- TELESCOPE
+require('telescope').setup {
+    defaults = {
+        path_display = filename_first,
+        layout_config = {
+            width = 0.9,
+            height = 0.9,
+        },
+    },
+}
+
 local telescope = require('telescope.builtin')
 vim.keymap.set('n',
     '<leader>ff',
@@ -233,7 +251,7 @@ vim.keymap.set('n',
 -- [f]ind [t]ags
 vim.keymap.set('n',
     '<leader>ft',
-    telescope.tags,
+    telescope.tagstack,
     { desc = '[f]ind [t]ags' })
 
 

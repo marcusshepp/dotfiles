@@ -196,6 +196,13 @@ vim.keymap.set('n', '<leader>=', 'gg=G<C-o>')
 vim.keymap.set('n', '<leader>p', 'ggVG"*p')
 
 -- vim.diagnostic.config({ virtual_text = false })
+local pcwd = function()
+    print(vim.fn.expand('%:p:h'))
+end
+vim.keymap.set('n', 
+    '<leader>cwd', 
+    pcwd, 
+    { desc = 'Print current working directory' })
 
 -- TELESCOPE
 require('telescope').setup {
@@ -289,12 +296,12 @@ else
       highlight Normal ctermbg=none
       highlight NonText ctermbg=none
     ]]
-    -- surround
-    vim.keymap.set('i', '{', '{}<esc>i')
-    vim.keymap.set('i', '(', '()<esc>i')
-    vim.keymap.set('i', '[', '[]<esc>i')
-    vim.keymap.set('i', '\'', '\'\'<esc>i')
-    vim.keymap.set('i', '"', '""<esc>i')
+    -- -- surround
+    -- vim.keymap.set('i', '{', '{}<esc>i')
+    -- vim.keymap.set('i', '(', '()<esc>i')
+    -- vim.keymap.set('i', '[', '[]<esc>i')
+    -- vim.keymap.set('i', '\'', '\'\'<esc>i')
+    -- vim.keymap.set('i', '"', '""<esc>i')
 
 
     -- LSP settings.

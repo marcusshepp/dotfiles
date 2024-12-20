@@ -1,4 +1,5 @@
 return {
         "github/copilot.vim",
-        enabled = not vim.g.vscode
+        enabled = not vim.g.vscode,
 }
+

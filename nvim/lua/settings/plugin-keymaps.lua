@@ -60,3 +60,22 @@ nmap('<leader>ws',
     require('telescope.builtin').lsp_dynamic_workspace_symbols,
     '[W]orkspace [S]ymbols')
 
+
+
+local bar = 1
+local foo = function ()
+    if (bar == 1) then
+        vim.cmd("Copilot disable")
+        bar = 0
+        print('copilot disabled')
+    else
+        vim.cmd("Copilot enable")
+        bar = 1
+        print('copilot enabled')
+    end
+end
+nmap('<leader>cp', foo, '[C]o[P]ilot')
+
+
+
+

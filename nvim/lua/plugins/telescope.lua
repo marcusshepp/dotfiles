@@ -7,8 +7,6 @@ local function filename_first(_, path)
 	return string.format("%s\t\t%s", tail, parent)
 end
 
-print("Loading telescope.lua")
-
 return {
     'nvim-telescope/telescope.nvim',
     config = function() 

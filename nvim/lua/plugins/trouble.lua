@@ -1,3 +1,0 @@
-print("TODO TROUBLE")
-
-return {}

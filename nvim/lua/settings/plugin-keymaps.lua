@@ -77,5 +77,7 @@ end
 nmap('<leader>cp', foo, '[C]o[P]ilot')
 
 
+local oil = require('oil')
+nmap('<leader>-', '<cmd>Oil<cr>', 'Oil Open CWD')
 
 

@@ -24,9 +24,16 @@ config.keys = {
         mods = 'CTRL',
         action = wezterm.action.CloseCurrentPane { confirm = true },
     },
+
     {
-        key = 'd',
-        mods = 'CTRL',
+        key = 'M',
+        mods = 'CTRL|SHIFT',
+        action = wezterm.action.ActivateTabRelative(-1),
+    },
+
+    {
+        key = 'D',
+        mods = 'CTRL|SHIFT',
         action = wezterm.action.ActivateTabRelative(1),
     },
 

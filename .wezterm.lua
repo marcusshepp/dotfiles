@@ -4,7 +4,7 @@ local config = {}
 
 print("testing the storm")
 
-config.font_size = 10.0
+config.font_size = 12.0
 config.font = wezterm.font("Cascadia Code")
 config.color_scheme = "Dracula"
 config.enable_tab_bar = false

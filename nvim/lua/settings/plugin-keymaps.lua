@@ -41,6 +41,12 @@ vim.keymap.set('n',
     telescope.tagstack,
     { desc = '[f]ind [t]ags' })
 
+-- [s]earch [h]istory
+vim.keymap.set('n',
+    '<leader>sh',
+    telescope.search_history,
+    { desc = '[s]earch [h]istory' })
+
 local nmap = function(keys, func, desc)
     if desc then
         desc = 'LSP: ' .. desc

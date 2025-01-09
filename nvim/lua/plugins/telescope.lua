@@ -18,6 +18,45 @@ return {
                     width = 0.9,
                     height = 0.9,
                 },
+                file_ignore_patterns = {
+                    "node_modules",
+                    ".git",
+                    ".cache",
+                    ".vscode",
+                    ".idea",
+                    ".DS_Store",
+                    ".venv",
+                    ".pytest_cache",
+                    "__pycache__",
+                    ".mypy_cache",
+                    ".tox",
+                    ".gitignore",
+                    ".gitmodules",
+                    ".gitattributes",
+                    ".gitkeep",
+                    ".gitlab-ci.yml",
+                    ".gitlab-ci.yml.example",
+                },
+            },
+            pickers = {
+                find_files = {
+                    theme = "ivy",
+                },
+                git_files = {
+                    theme = "ivy",
+                },
+                buffers = {
+                    theme = "ivy",
+                },
+                live_grep = {
+                    theme = "ivy",
+                },
+                oldfiles = {
+                    theme = "ivy",
+                },
+                help_tags = {
+                    theme = "ivy",
+                },
             },
         })
     end

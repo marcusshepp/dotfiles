@@ -8,11 +8,11 @@ return {
     },
     config = function()
         local lsp = require('lspconfig')
-        lsp.pyright.setup{}
-        lsp.ts_ls.setup{}
-        lsp.lua_ls.setup{}
-        lsp.gopls.setup{}
-        lsp.csharp_ls.setup{}
+        lsp.pyright.setup {}
+        lsp.ts_ls.setup {}
+        lsp.lua_ls.setup({ settings = { diagnostics = { globals = { "vim" } } } })
+        lsp.gopls.setup {}
+        lsp.csharp_ls.setup {}
         local nodePath = "C:/Program Files/nodejs/node_modules"
         local alsGlobalPath = nodePath .. "/@angular/language-server"
         local tsGlobalPath = nodePath .. "/typescript"
@@ -32,5 +32,6 @@ return {
             on_attach = function(client, _)
                 print("Language server attached: " .. client.name)
             end,
-        })    end,
+        })
+    end,
 }

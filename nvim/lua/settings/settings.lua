@@ -29,19 +29,29 @@ local servers = {
 }
 
 local blink = require 'blink.cmp'
+local lspconfig = require 'lspconfig'
+local mason_lspconfig = require 'mason-lspconfig'
+
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = blink.get_lsp_capabilities(capabilities)
 
 -- Ensure the servers above are installed
-local mason_lspconfig = require 'mason-lspconfig'
 mason_lspconfig.setup {
     ensure_installed = vim.tbl_keys(servers),
 }
+
+local on_attach = function(_, bufnr)
+    vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
+        vim.lsp.buf.format()
+    end, { desc = 'Format current buffer with LSP' })
+end
+
 mason_lspconfig.setup_handlers {
     function(server_name)
-        require('lspconfig')[server_name].setup {
+        lspconfig[server_name].setup {
             capabilities = capabilities,
             settings = servers[server_name],
+            on_attach = on_attach,
         }
     end,
 }
@@ -59,7 +69,7 @@ blink.setup {
         },
         signature = { enabled = true },
         completion = {
-                documentation = {
+            documentation = {
                 auto_show = true,
                 auto_show_delay_ms = 500,
             } 

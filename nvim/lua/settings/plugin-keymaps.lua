@@ -41,6 +41,12 @@ vim.keymap.set('n',
     telescope.tagstack,
     { desc = '[f]ind [t]ags' })
 
+-- [f]ind [r]esume
+vim.keymap.set('n',
+    '<leader>fr',
+    telescope.resume,
+    { desc = '[f]ind [r]esume' })
+
 -- [s]earch [h]istory
 vim.keymap.set('n',
     '<leader>sh',

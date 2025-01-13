@@ -1,3 +1,4 @@
+require('settings.functions')
 require('settings.keymaps')
 
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'

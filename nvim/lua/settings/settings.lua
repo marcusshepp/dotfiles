@@ -11,7 +11,6 @@ vim.cmd [[
 require('mason').setup()
 local servers = {
     -- gopls = {},
-    pyright = {},
     ts_ls = {},
     emmet_ls = {
         emmet = {

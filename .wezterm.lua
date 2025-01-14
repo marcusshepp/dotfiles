@@ -2,8 +2,6 @@ local wezterm = require 'wezterm'
 
 local config = {}
 
-print("testing the storm")
-
 config.font_size = 12.0
 config.font = wezterm.font("Cascadia Code")
 config.color_scheme = "Dracula"

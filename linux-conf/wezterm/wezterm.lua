@@ -3,20 +3,15 @@ local wezterm = require 'wezterm'
 local config = {}
 
 config.font_size = 12.0
-config.font = wezterm.font("Cascadia Code")
+config.font = wezterm.font("Ubuntu Mono")
 config.color_scheme = "Dracula"
 config.enable_tab_bar = false
 config.window_background_opacity = 1
-config.window_background_image = "C:\\Users\\mshepherd\\pics\\dragon-ball3.jpg"
+config.window_background_image = "/home/$USER/p/dotfiles/img/dragon-ball3.jpg"
 
-config.default_prog = { "pwsh", "-NoLogo", "-NoExit", "-Command", "$PROFILE" }
+config.default_prog = { "/bin/bash", "--login" }
 
--- config.leader = { key="a", mods="CTRL", timeout_milliseconds=1000 }
 config.keys = {
-    -- {
-    --     key='-',
-    --     action = wezterm.action{SplitHorizontal={domain="CurrentPaneDomain"}},
-    -- }
     {
         key = 'q',
         mods = 'CTRL',
@@ -58,8 +53,7 @@ config.keys = {
         mods = 'CTRL',
         action = wezterm.action.ActivatePaneDirection("Up"),
     },
-
 }
 
-
 return config
+

@@ -1,6 +1,8 @@
 vim.opt.signcolumn = 'no'
 vim.o.background = "dark"
 vim.cmd([[colorscheme gruvbox]])
+-- vim.cmd([[colorscheme americano]])
+-- require('americano').colorscheme()
 vim.cmd [[
       highlight Normal guibg=none
       highlight NonText guibg=none

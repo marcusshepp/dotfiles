@@ -7,7 +7,7 @@ config.font = wezterm.font("Cascadia Code")
 config.color_scheme = "Dracula"
 config.enable_tab_bar = false
 config.window_background_opacity = 1
-config.window_background_image = "C:\\Users\\mshepherd\\pics\\stone2.jpg"
+config.window_background_image = "C:\\Users\\mshepherd\\pics\\dragon-ball3.jpg"
 
 config.default_prog = { "pwsh", "-NoLogo", "-NoExit", "-Command", "$PROFILE" }
 

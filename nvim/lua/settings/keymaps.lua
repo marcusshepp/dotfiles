@@ -36,8 +36,8 @@ vim.keymap.set('n', '<leader>O', 'O<esc>')
 vim.keymap.set('n', '<leader>=', 'gg=G<C-o>')
 
 -- Replace entire buffer with content of register
-vim.keymap.set('n', '<leader>p', 'ggVG"*p')
-vim.keymap.set('n', '<leader>c', 'ggVG"*y')
+vim.keymap.set('n', '<leader>p', 'ggVG"+p')
+vim.keymap.set('n', '<leader>c', 'ggVG"+y')
 
 -- vim.diagnostic.config({ virtual_text = false })
 local pcwd = function()

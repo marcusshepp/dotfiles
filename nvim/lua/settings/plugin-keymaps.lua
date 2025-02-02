@@ -1,4 +1,5 @@
 local telescope = require('telescope.builtin')
+vim.keymap.set('n', '<leader>fz', ':Telescope media_files<CR>')
 vim.keymap.set('n',
     '<leader>ff',
     telescope.find_files,

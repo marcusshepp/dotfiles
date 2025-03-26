@@ -36,10 +36,6 @@ Currently, symlinks are manually created to map configuration files from this re
 - [ ] Plugin version management
 - [ ] Documentation for each tool's configuration
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 🙏 Acknowledgments
 
 Special thanks to the developers and communities behind all the tools used in this configuration. Their work makes this development environment possible.

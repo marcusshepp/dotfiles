@@ -9,7 +9,7 @@ end
 
 return {
     'nvim-telescope/telescope.nvim',
-    config = function() 
+    config = function()
         local ts = require('telescope')
         ts.setup({
             defaults = {
@@ -58,6 +58,15 @@ return {
                     theme = "ivy",
                 },
             },
+            extensions = {
+                media_files = {
+                  -- filetypes whitelist
+                  filetypes = {"png", "webp", "jpg", "jpeg", "gif"},
+                  -- find command (defaults to `fd`)
+                  find_cmd = "rg"
+                }
+          }
         })
+        ts.load_extension('media_files')
     end
 }

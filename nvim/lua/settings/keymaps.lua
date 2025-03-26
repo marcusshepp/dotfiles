@@ -17,6 +17,15 @@ vim.opt.relativenumber = true
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+-- Go to next error (skip warnings)
+vim.keymap.set('n', ']e', function()
+  vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
+end)
+
+-- Go to previous error (skip warnings)
+vim.keymap.set('n', '[e', function()
+  vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
+end)
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
 
@@ -39,13 +48,19 @@ vim.keymap.set('n', '<leader>=', 'gg=G<C-o>')
 vim.keymap.set('n', '<leader>p', 'ggVG"*p')
 vim.keymap.set('n', '<leader>c', 'ggVG"*y')
 
+-- restart lsp
+vim.keymap.set('n', '<leader>l',
+    '<cmd>lua vim.lsp.stop_client(vim.lsp.get_active_clients())<cr>', { desc = 'Stop LSP' })
+vim.keymap.set('n', '<leader>ll',
+    '<cmd>lua vim.cmd("edit")<cr>', { desc = 'Reload current buffer' })
+
 -- vim.diagnostic.config({ virtual_text = false })
 local pcwd = function()
     print(vim.fn.expand('%:p:h'))
 end
-vim.keymap.set('n', 
-    '<leader>cwd', 
-    pcwd, 
+vim.keymap.set('n',
+    '<leader>cwd',
+    pcwd,
     { desc = 'Print current working directory' })
 
 

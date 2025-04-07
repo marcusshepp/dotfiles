@@ -1,6 +1,7 @@
 vim.opt.signcolumn = 'no'
 vim.o.background = "dark"
 vim.opt.foldmethod = 'indent'
+vim.opt.termguicolors = true
 
 vim.cmd([[colorscheme gruvbox]])
 

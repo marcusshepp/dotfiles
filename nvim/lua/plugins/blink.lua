@@ -21,6 +21,7 @@ return {
       default = { 'lsp', 'path', 'snippets', 'buffer' },
       -- optionally disable cmdline completions
       -- cmdline = {},
+        per_filetype = {codecompanion = { 'codecompanion' } },
     },
 
     -- experimental signature help support

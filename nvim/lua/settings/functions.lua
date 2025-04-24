@@ -108,3 +108,38 @@ vim.api.nvim_create_autocmd("BufWritePre", {
         end
     end,
 })
+
+local function remove_comments()
+    local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+    local result = {}
+    local inMultiLineComment = false
+    for _, line in ipairs(lines) do
+        local newLine = ""
+        local j = 1
+        while j <= #line do
+            if inMultiLineComment then
+                if j < #line and line:sub(j, j + 1) == "*/" then
+                    inMultiLineComment = false
+                    j = j + 2
+                else
+                    j = j + 1
+                end
+            else
+                if j < #line and line:sub(j, j + 1) == "//" then
+                    break
+                elseif j < #line and line:sub(j, j + 1) == "/*" then
+                    inMultiLineComment = true
+                    j = j + 2
+                else
+                    newLine = newLine .. line:sub(j, j)
+                    j = j + 1
+                end
+            end
+        end
+        table.insert(result, newLine)
+    end
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, result)
+end
+vim.api.nvim_create_user_command("RemoveComments", remove_comments, {})
+
+

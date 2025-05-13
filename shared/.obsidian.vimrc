@@ -1,6 +1,6 @@
 " Basic settings
-let mapleader = " "
-let maplocalleader = "\\"
+" The leader key needs special handling in Obsidian
+unmap <Space>
 
 " Exit insert mode with jj
 inoremap jj <Esc>
@@ -8,38 +8,28 @@ inoremap jj <Esc>
 " Clear search highlighting with Escape
 nnoremap <Esc> :nohl<CR>
 
-" Indentation settings
-set smartindent
-set autoindent
-set tabstop=4
-set expandtab
-set shiftwidth=4
+" Enable relative line numbers
+set number
+set relativenumber
 
-" Insert new lines without entering insert mode
-nnoremap <leader>o o<Esc>
-nnoremap <leader>O O<Esc>
-
-" Format entire document
-nnoremap <leader>= gg=G<C-o>
-
-" Copy/paste entire buffer
-nnoremap <leader>p ggVG"+p
-nnoremap <leader>c ggVG"+y
-
-" Print current working directory
-nnoremap <leader>cwd :echo expand('%:p:h')<CR>
-
-" Go back and forward with Ctrl+O and Ctrl+I
-" (make sure to remove default Obsidian shortcuts for these to work)
-exmap back obcommand app:go-back
-nmap <C-o> :back<CR>
-exmap forward obcommand app:go-forward
-nmap <C-i> :forward<CR>
-
-" Quick switcher (search notes)
+" Quick switcher (search notes) - using Space directly instead of leader
 exmap searchByName obcommand switcher:open
-nmap <leader>ff :searchByName<CR>
+nmap <Space>ff :searchByName<CR>
 
 " Follow link under cursor with gd
 exmap followLink obcommand editor:follow-link
 nmap gd :followLink<CR>
+
+" Insert new lines without entering insert mode
+nnoremap <Space>o o<Esc>
+nnoremap <Space>O O<Esc>
+
+" Format entire document
+nnoremap <Space>= gg=G<C-o>
+
+" Copy/paste entire buffer
+nnoremap <Space>p ggVG"+p
+nnoremap <Space>y ggVG"+y
+
+" Print current working directory
+nnoremap <Space>cwd :echo expand('%:p:h')<CR>

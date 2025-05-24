@@ -1,6 +1,6 @@
 [user]
-	name = sheph2mj
-	email = sheph2mj@cmich.edu
+	name = marcusshepp
+	email = marcusshepdotcom@gmail.com
 [push]
 	default = simple
 [alias]
@@ -17,26 +17,8 @@
 	dump = cat-file -p
 	see = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
 	recent = log -n 10 --oneline --graph
-
-[mergetool "Kaleidoscope"]
-[merge]
-[difftool "Kaleidoscope"]
-[difftool]
-	prompt = false
-[mergetool]
-	trustExitCode = true
-[diff]
-	tool = Kaleidoscope
 [core]
 	trustctime = false
-	editor = vim
-[mergetool "Kaleidoscope"]
-	trustexitcode = true
-[merge]
-	tool = Kaleidoscope
-[difftool "Kaleidoscope"]
-	cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
-[mergetool]
-	prompt = false
-[mergetool "Kaleidoscope"]
-	cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
+	editor = vi
+
+

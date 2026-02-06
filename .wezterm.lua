@@ -6,6 +6,7 @@ config.font_size = 12.0
 config.font = wezterm.font("Cascadia Code")
 config.color_scheme = "Dracula"
 config.enable_tab_bar = false
+config.audible_bell = "Disabled"
 config.window_background_opacity = 1
 config.window_background_image = "C:\\Users\\marcu\\p\\dotfiles\\img\\dragon-ball3.jpg"
 

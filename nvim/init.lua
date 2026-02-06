@@ -1,39 +1,44 @@
-require('settings.functions')
-require('settings.keymaps')
+-- Leader keys (must be before lazy)
+vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
 
-local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
-if not vim.loop.fs_stat(lazypath) then
-    vim.fn.system { 'git', 'clone', '--filter=blob:none', 'https://github.com/folke/lazy.nvim.git', '--branch=stable', lazypath }
+-- Core settings (before plugins for instant feel)
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.opt.termguicolors = true
+vim.opt.signcolumn = "yes"
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = true
+vim.opt.smartindent = true
+vim.opt.foldmethod = "indent"
+vim.opt.foldlevel = 99
+
+-- Bootstrap lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+    vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath })
 end
 vim.opt.rtp:prepend(lazypath)
 
-require('lazy').setup('plugins', {})
-require('settings.plugin-keymaps')
-require('settings.settings')
+-- Load plugins with performance options
+require("lazy").setup("plugins", {
+    performance = {
+        rtp = {
+            disabled_plugins = {
+                "gzip",
+                "matchit",
+                "matchparen",
+                "netrwPlugin",
+                "tarPlugin",
+                "tohtml",
+                "tutor",
+                "zipPlugin",
+            },
+        },
+    },
+    change_detection = { notify = false },
+})
 
-if vim.g.vscode then
-    local vsc = require('vscode')
-    vsc.notify('Let\'s get shit done\'')
-
-    vim.keymap.set({ 'n' }, '<leader>rr',
-        function()
-            vim.fn.VSCodeNotify('editor.action.rename')
-        end,
-        { desc = 'vscode: rename symbol' })
-
-    vim.keymap.set({ 'n' }, 'gr',
-        function()
-            vim.fn.VSCodeNotify('editor.action.referenceSearch.trigger')
-        end,
-        { desc = 'vscode: find references' })
-
-    vim.keymap.set({ 'n' }, '<leader>ff',
-        function()
-            vim.fn.VSCodeNotify('workbench.action.quickOpen')
-        end,
-        { desc = 'vscode: fzf' })
-else
-    -- require("lspconfig").lua_ls.setup({ settings = { diagnostics = { globals = { "vim" } } } })
-end
-
-
+-- Keymaps
+require("settings.keymaps")

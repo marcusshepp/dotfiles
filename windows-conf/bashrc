@@ -1,0 +1,17 @@
+export PATH="$HOME/.local/bin:$PATH"
+
+# Bitwarden CLI profiles (auto-load saved session)
+bw-sync() {
+    export BITWARDENCLI_APPDATA_DIR="$HOME/.config/bw-sync"
+    [ -f "$HOME/.config/bw-sync/session" ] && export BW_SESSION=$(cat "$HOME/.config/bw-sync/session")
+    bw "$@"
+}
+
+bw-personal() {
+    export BITWARDENCLI_APPDATA_DIR="$HOME/.config/bw-personal"
+    [ -f "$HOME/.config/bw-personal/session" ] && export BW_SESSION=$(cat "$HOME/.config/bw-personal/session")
+    bw "$@"
+}
+
+# API keys — set these in your environment, not here
+# export TAVILY_API_KEY="..."

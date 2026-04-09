@@ -36,7 +36,7 @@ gaps:
 
     # Gap between windows and the screen edge.
     outer_gap:
-        top: "40px"
+        top: "5px"
         right: "5px"
         bottom: "5px"
         left: "5px"
@@ -99,14 +99,23 @@ window_behavior:
 
 workspaces:
     - name: "1"
+      bind_to_monitor: 1
     - name: "2"
+      bind_to_monitor: 1
     - name: "3"
+      bind_to_monitor: 1
     - name: "4"
+      bind_to_monitor: 1
     - name: "5"
+      bind_to_monitor: 1
     - name: "6"
+      bind_to_monitor: 1
     - name: "7"
+      bind_to_monitor: 1
     - name: "8"
+      bind_to_monitor: 0
     - name: "9"
+      bind_to_monitor: 2
 
 window_rules:
     - commands: ["ignore"]
@@ -193,7 +202,7 @@ keybindings:
     # Change tiling direction. This determines where new tiling windows will
     # be inserted.
     - commands: ["toggle-tiling-direction"]
-      bindings: ["alt+v"]
+      bindings: ["alt+g"]
 
     # Change focus from tiling windows -> floating -> fullscreen.
     - commands: ["wm-cycle-focus"]

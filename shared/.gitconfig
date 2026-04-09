@@ -1,5 +1,5 @@
 [user]
-	name = marcusshepp
+	name = Marcus Shepherd
 	email = marcusshepdotcom@gmail.com
 [push]
 	default = simple
@@ -8,17 +8,18 @@
 	ci = commit
 	st = status
 	br = branch
-	a = add --all .
+	a = add
+	ps = push
+	d = diff
 	ls = log --oneline
-	pom = pull origin master
-	pum = pull upstream master
-	hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
-	type = cat-file -t
-	dump = cat-file -p
+	hist = log --pretty=format:"%h %ad | %s%d [%an]" --graph --date=short
 	see = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
 	recent = log -n 10 --oneline --graph
 [core]
 	trustctime = false
 	editor = vi
-
-
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

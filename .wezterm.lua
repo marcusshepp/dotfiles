@@ -12,6 +12,10 @@ config.window_background_image = "C:\\Users\\marcu\\p\\dotfiles\\img\\dragon-bal
 
 config.default_prog = { "pwsh" }
 
+-- Let ALT keys pass through to the OS (for GlazeWM keybinds)
+config.send_composed_key_when_left_alt_is_pressed = false
+config.send_composed_key_when_right_alt_is_pressed = false
+
 -- config.leader = { key="a", mods="CTRL", timeout_milliseconds=1000 }
 config.keys = {
     -- {
@@ -61,6 +65,5 @@ config.keys = {
     },
 
 }
-
 
 return config

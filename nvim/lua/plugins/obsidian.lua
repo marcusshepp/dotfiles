@@ -20,11 +20,9 @@ return {
   opts = {
     workspaces = {
       {
-        name = "foobar",
-        path = "~/obsidian/foobar",
-      } 
+        name = "vault",
+        path = "~/o",
+      },
     },
-
-    -- see below for full list of options 👇
   },
 }

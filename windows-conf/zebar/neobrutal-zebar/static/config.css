@@ -1,0 +1,51 @@
+:root {
+  /* sizes */
+  --height: 2.17rem;
+  --bar-margin-y: 5px;
+  --bar-margin-x: 5px;
+
+  /* fonts */
+  --font-family: "SF Pro Display", Roboto, Helvetica, Arial, sans-serif;
+  --font-size: 12px;
+  --font-weight: 500;
+
+  /* border */
+  --border-size: 0.125rem;
+  --radius: 0.25rem;
+
+  /* shadow */
+  --shadow-size-bar: 0;
+  --shadow-size-button: 0.125rem;
+
+  /* colors */
+  --text: var(--rp-text);
+  --bg: var(--rp-overlay);
+  --border: var(--rp-highlight-low);
+  --shadow: var(--rp-highlight-low);
+  --power: var(--rp-love);
+  --restart: var(--rp-foam);
+  --memory: var(--rp-iris);
+  --memory-medium: var(--rp-gold);
+  --memory-high: var(--rp-love);
+  --cpu: var(--rp-rose);
+  --cpu-high-usage: var(--rp-love);
+  --battery-good: var(--rp-pine);
+  --battery-mid: var(--rp-gold);
+  --battery-low: var(--rp-love);
+  --volume-muted: var(--rp-foam);
+  --volume-low: var(--rp-iris);
+  --volume-medium: var(--rp-pine);
+  --volume-high: var(--rp-rose);
+  --focused-process: var(--rp-text);
+  --process: var(--rp-muted);
+  --displayed: var(--rp-text);
+  --ws-1: var(--rp-gold);
+  --ws-2: var(--rp-love);
+  --ws-3: var(--rp-pine);
+  --ws-4: var(--rp-foam);
+  --ws-5: var(--rp-iris);
+  --tiling-direction: var(--rp-rose);
+  --add-workspace: var(--rp-foam);
+  --not-playing: var(--rp-love);
+  --now-playing: var(--rp-pine);
+}

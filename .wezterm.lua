@@ -9,52 +9,21 @@ local images = {
     --                                         22-6    6-12     12-18      18-22
 
     -- === SPACE ===
-    { file = "night-nebula-dark.jpg",           weights = { 10,  8,  2,  5 } },
-    { file = "space-galaxy-3-dark.jpg",         weights = {  8,  8,  2,  4 } },
-    { file = "space-galaxy-4-dark.jpg",         weights = {  8,  8,  2,  4 } },
-    { file = "space-nebula-1-dark.jpg",         weights = {  8,  8,  2,  4 } },
     { file = "space-nebula-2-dark.jpg",         weights = {  8,  8,  2,  4 } },
     { file = "space-nebula-3-dark.jpg",         weights = {  8,  8,  2,  4 } },
 
-    -- === MORNING ===
-    { file = "morning-sunrise-dark.jpg",        weights = {  2,  6,  4,  2 } },
-
-    -- === AFTERNOON: neon streets ===
-    { file = "afternoon-neon-rain-dark.jpg",    weights = {  2,  4, 15,  6 } },
-
-    -- === ANIME: dark action ===
+    -- === ANIME ===
     { file = "aot-levi-dark.jpg",               weights = {  5,  8,  5,  5 } },
-    { file = "anime-dark-1-dark.jpg",           weights = {  5,  8,  5,  5 } },
-    { file = "anime-dark-2-dark.jpg",           weights = {  5,  8,  5,  5 } },
-    { file = "anime-dark-3-dark.jpg",           weights = {  5,  8,  5,  5 } },
     { file = "anime-dark-4-dark.jpg",           weights = {  5,  8,  5,  5 } },
-    { file = "anime-dark-37-dark.jpg",          weights = {  5,  8,  5,  5 } },
-
-    -- === ANIME: Death Note ===
-    { file = "dn-ryuk-dark.jpg",                weights = {  6,  7,  4,  6 } },
-    { file = "dn-dark2-dark.jpg",               weights = {  6,  4,  4,  6 } },
-
-    -- === TV: Breaking Bad ===
-    { file = "bb-hazmat-dark.jpg",              weights = {  4,  5,  5,  4 } },
-
-    -- === TV: Game of Thrones ===
-    { file = "got-1-dark.jpg",                  weights = {  5,  5,  5,  5 } },
-    { file = "got-2-dark.jpg",                  weights = {  5,  5,  5,  5 } },
-    { file = "got-throne-dark.jpg",             weights = {  5,  5,  5,  5 } },
 
     -- === CARTOON: Invader Zim ===
     { file = "zim-1-dark.jpg",                  weights = {  4,  6,  6,  4 } },
-    { file = "zim-2-dark.jpg",                  weights = {  4,  6,  6,  4 } },
 
-    -- === ART: Buddhist / Eastern ===
-    { file = "art-buddha-3-dark.jpg",           weights = {  5,  8,  4,  6 } },
+    -- === ART ===
     { file = "art-buddha-4-dark.jpg",           weights = {  5,  8,  4,  6 } },
-    { file = "art-buddha-5-dark.jpg",           weights = {  5,  8,  4,  6 } },
-    { file = "art-sculpture-3-dark.jpg",        weights = {  5,  8,  4,  6 } },
 
-    -- === ART: sculpture ===
-    { file = "art-sculpture-1-dark.jpg",        weights = {  4,  6,  4,  4 } },
-    { file = "art-sculpture-2-dark.jpg",        weights = {  5,  6,  4,  5 } },
+    -- === SOLID ===
+    { file = "black-dark.jpg",                  weights = {  2,  1,  1,  2 } },
 
     -- === LEGACY ===
     { file = "dragon-ball3.jpg",                weights = {  2,  5,  8,  3 } },
@@ -126,21 +95,9 @@ for _, img in ipairs(images) do
     local label = img.file:gsub("%-dark%.", "."):gsub("%.[^.]+$", ""):gsub("%-", " ")
     table.insert(picker_choices, { id = img_dir .. img.file, label = label })
 end
--- Add a "Random" option at the top
+-- Add "Random" and "No background" options at the top
+table.insert(picker_choices, 1, { id = "none", label = "No background" })
 table.insert(picker_choices, 1, { id = "random", label = "Random (time-weighted)" })
-
--- Wallpaper picker event handler
-wezterm.on("wallpaper-selected", function(window, pane, id, label)
-    if id == nil then return end -- user cancelled
-    local path
-    if id == "random" then
-        path = pick_background()
-    else
-        path = id
-    end
-    window:set_config_overrides({ window_background_image = path })
-    wezterm.log_info("Wallpaper set to: " .. path)
-end)
 
 -- === WORKSPACE LAYOUTS ===
 -- Each layout defines a grid and commands per pane.
@@ -148,6 +105,8 @@ end)
 --   2x2: [top-left=1, top-right=2, bottom-left=3, bottom-right=4]
 --   2x1: [left=1, right=2]
 --   1x2: [top=1, bottom=2]
+--   2x2-br2: 2x2 with bottom-right split vertically into 2 sub-panes
+--            [top-left=1, top-right=2, bot-left=3, bot-right-left=4, bot-right-right=5]
 local layouts = {
     {
         label = "Portal Local Dev UI (prod API/DB)",
@@ -177,6 +136,23 @@ local layouts = {
         panes = {
             "claude --dangerously-skip-permissions\r",
             "cd ~/p/leb\r",
+        },
+    },
+    {
+        label = "Senate - Eva Side-by-Side (Upgrade 4200 + Baseline 4201)",
+        grid = "2x2-br2",
+        panes = {
+            -- 1: top-left — Claude at ~/o with an injected setup prompt
+            -- (docker, evadb, VS). See the prompt file for the exact steps.
+            "cd ~/o\rclaude --dangerously-skip-permissions \"$(cat ~/o/senate/knowledge/workspace-prompts/eva-side-by-side.md)\"\r",
+            -- 2: top-right — second Claude instance at the default ~/o vault.
+            "cd ~/o\rclaude --dangerously-skip-permissions\r",
+            -- 3: bot-left — pi instance at the spinach-pi repo.
+            "cd ~/p/spinach-pi; pi\r",
+            -- 4: bot-right-left — ng serve on port 4200 (upgrade).
+            "cd C:\\Users\\marcu\\p\\leb\\Eva\rnpm start\r",
+            -- 5: bot-right-right — ng serve on port 4201 (baseline).
+            "cd C:\\Users\\marcu\\p\\leb-baseline\\Eva\rnpm start -- --port 4201\r",
         },
     },
     {
@@ -240,6 +216,31 @@ for i, layout in ipairs(layouts) do
     table.insert(layout_choices, { id = tostring(i), label = layout.label .. "  (" .. layout.grid .. ")" })
 end
 
+-- === ACTION MENU ===
+-- Ctrl+. opens a palette of quick actions. Add entries here; each needs a
+-- `label` and a `run(window, pane)` function.
+local actions = {
+    {
+        label = "Open newest .md in ~/o (new tab)",
+        run = function(window, pane)
+            window:perform_action(
+                wezterm.action.SpawnCommandInNewTab {
+                    args = {
+                        'pwsh', '-NoProfile', '-Command',
+                        [[$f = Get-ChildItem -Path $HOME\o -Recurse -File -Filter *.md -ErrorAction SilentlyContinue | Where-Object { $_.FullName -notmatch '\\\.(obsidian|git|trash)\\' -and $_.FullName -notmatch '\\node_modules\\' } | Sort-Object LastWriteTime -Descending | Select-Object -First 1; if ($f) { nvim $f.FullName } else { Write-Host 'No markdown files found in ~/o'; Start-Sleep 2 }]],
+                    },
+                },
+                pane
+            )
+        end,
+    },
+}
+
+local action_choices = {}
+for i, a in ipairs(actions) do
+    table.insert(action_choices, { id = tostring(i), label = a.label })
+end
+
 local function spawn_layout(window, pane, layout)
     local panes = {}
     -- col_split: width of right column (default 0.5)
@@ -260,6 +261,15 @@ local function spawn_layout(window, pane, layout)
     elseif layout.grid == "1x2" then
         local bottom = pane:split({ direction = "Bottom", size = rs })
         panes = { pane, bottom }
+
+    elseif layout.grid == "2x2-br2" then
+        -- 2x2 layout with bottom-right cell further split vertically into 2.
+        -- Panes (L→R, T→B): top-left, top-right, bot-left, bot-right-left, bot-right-right
+        local right = pane:split({ direction = "Right", size = cs })
+        local bot_left = pane:split({ direction = "Bottom", size = rs })
+        local bot_right = right:split({ direction = "Bottom", size = rs })
+        local bot_right_right = bot_right:split({ direction = "Right", size = 0.5 })
+        panes = { pane, right, bot_left, bot_right, bot_right_right }
     end
 
     -- Send commands to each pane
@@ -315,6 +325,10 @@ config.keys = {
             choices = picker_choices,
             action = wezterm.action_callback(function(window, pane, id, label)
                 if id == nil then return end
+                if id == "none" then
+                    window:set_config_overrides({ window_background_image = "" })
+                    return
+                end
                 local path
                 if id == "random" then
                     path = pick_background()
@@ -368,10 +382,32 @@ config.keys = {
         },
     },
 
+    -- Ctrl+. : action menu (extensible palette of quick commands)
+    {
+        key = '.',
+        mods = 'CTRL',
+        action = wezterm.action.InputSelector {
+            title = "Actions",
+            choices = action_choices,
+            fuzzy = true,
+            action = wezterm.action_callback(function(window, pane, id, label)
+                if id == nil then return end
+                actions[tonumber(id)].run(window, pane)
+            end),
+        },
+    },
+
     {
         key = 'q',
         mods = 'CTRL',
         action = wezterm.action.CloseCurrentPane { confirm = true },
+    },
+
+    -- Ctrl+U: clear the current command line (PSReadLine RevertLine via Escape)
+    {
+        key = 'u',
+        mods = 'CTRL',
+        action = wezterm.action.SendKey { key = 'Escape' },
     },
 
     {

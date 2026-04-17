@@ -30,3 +30,30 @@ vim.keymap.set("n", "<leader>o", "o<esc>", { desc = "New line below" })
 vim.keymap.set("n", "<leader>O", "O<esc>", { desc = "New line above" })
 vim.keymap.set("n", "<leader>p", 'ggVG"+p', { desc = "Paste over buffer" })
 vim.keymap.set("n", "<leader>y", 'ggVG"+y', { desc = "Yank buffer" })
+
+-- Open most recently modified markdown file in ~/o
+vim.keymap.set("n", "<leader>m", function()
+    local vault = vim.fn.expand("~/o")
+    local newest, newest_mtime = nil, 0
+    local skip = { [".obsidian"] = true, [".git"] = true, [".trash"] = true, ["node_modules"] = true }
+    local function scan(dir)
+        for name, t in vim.fs.dir(dir) do
+            local path = dir .. "/" .. name
+            if t == "directory" then
+                if not skip[name] then scan(path) end
+            elseif t == "file" and name:match("%.md$") then
+                local stat = vim.uv.fs_stat(path)
+                if stat and stat.mtime.sec > newest_mtime then
+                    newest_mtime = stat.mtime.sec
+                    newest = path
+                end
+            end
+        end
+    end
+    scan(vault)
+    if newest then
+        vim.cmd("edit " .. vim.fn.fnameescape(newest))
+    else
+        vim.notify("No markdown files found in ~/o", vim.log.levels.WARN)
+    end
+end, { desc = "Open newest .md in ~/o" })

@@ -102,21 +102,30 @@ table.insert(picker_choices, 1, { id = "random", label = "Random (time-weighted)
 -- === WORKSPACE LAYOUTS ===
 -- Each layout defines a grid and commands per pane.
 -- Panes are numbered left-to-right, top-to-bottom:
+--   1x1: [pane=1] (single pane — current window, no splits)
 --   2x2: [top-left=1, top-right=2, bottom-left=3, bottom-right=4]
 --   2x1: [left=1, right=2]
 --   1x2: [top=1, bottom=2]
 --   2x2-br2: 2x2 with bottom-right split vertically into 2 sub-panes
 --            [top-left=1, top-right=2, bot-left=3, bot-right-left=4, bot-right-right=5]
+--   1+2x2:   top row spans full width, bottom is 2x2
+--            [top-full=1, mid-left=2, mid-right=3, bot-left=4, bot-right=5]
+--   2+2x2:   top row split L/R, bottom is 2x2
+--            [top-left=1, top-right=2, mid-left=3, mid-right=4, bot-left=5, bot-right=6]
+-- Optional `extra_windows` spawns additional standalone wezterm windows
+-- (separate from the main grid) each with its own cwd + command.
 local layouts = {
     {
         label = "Portal Local Dev UI (prod API/DB)",
-        grid = "2x2",
-        row_split = 0.2,
+        grid = "1x1",
         panes = {
-            "claude --dangerously-skip-permissions\r",
             "claude --dangerously-skip-permissions \"$(cat ~/o/business/knowledge/development/workspace-prompts/portal-local-dev-ui.md)\"\r",
-            "cd ~/p/spinach-pi; pi\r",
-            "cd ~/p/internal/sync.portal; npm run dev\r",
+        },
+        extra_windows = {
+            {
+                cwd = "C:\\Users\\marcu\\p\\internal\\sync.portal",
+                cmd = "npm run dev\r",
+            },
         },
     },
     {
@@ -128,6 +137,26 @@ local layouts = {
             "cd ~/p/internal/sync.runner; claude --dangerously-skip-permissions \"$(cat ~/o/business/knowledge/development/workspace-prompts/runner-monitor-loop.md)\"\r",
             "cd ~/p/internal/sync.runner\r",
             "cd ~/p/internal/sync.runner; bun run dev\r",
+        },
+    },
+    {
+        label = "Platinum Roofing - Monthly Ops",
+        grid = "2+2x2",
+        row_split = 0.7,  -- 70% bottom (2x2 scrape grid), 30% top (orchestrator + blog/social)
+        panes = {
+            -- All panes start in ~/o (PowerShell profile default) — no cd needed.
+            -- 1: top-left — workspace orchestrator Claude.
+            "claude --dangerously-skip-permissions \"$(cat ~/o/business/knowledge/development/workspace-prompts/platinum-roof/workspace.md)\"\r",
+            -- 2: top-right — blog post + social media drafter (writes Next.js post, deploys via sync-cli, saves social drafts to KB).
+            "claude --dangerously-skip-permissions \"$(cat ~/o/business/knowledge/development/workspace-prompts/platinum-roof/blog-and-social.md)\"\r",
+            -- 3: mid-left — Google Business Profile scraper (headless plat-gmb-gmb).
+            "claude --dangerously-skip-permissions \"$(cat ~/o/business/knowledge/development/workspace-prompts/platinum-roof/gmb-collection.md)\"\r",
+            -- 4: mid-right — Google Search Console scraper (headless plat-gmb-gsc).
+            "claude --dangerously-skip-permissions \"$(cat ~/o/business/knowledge/development/workspace-prompts/platinum-roof/gsc-collection.md)\"\r",
+            -- 5: bot-left — Google Analytics via the analytics MCP (no browser).
+            "& $HOME/p/_agent-workspace/portal/launch-claude-mcp.ps1 platinum-roofing analytics $HOME/o/business/knowledge/development/workspace-prompts/platinum-roof/ga-collection.md\r",
+            -- 6: bot-right — Google Ads scraper (headless plat-gmb-ads).
+            "claude --dangerously-skip-permissions \"$(cat ~/o/business/knowledge/development/workspace-prompts/platinum-roof/ads-collection.md)\"\r",
         },
     },
     {
@@ -203,10 +232,9 @@ local layouts = {
     },
     {
         label = "Local Dev Env (dotfiles)",
-        grid = "2x1",
+        grid = "1x1",
         panes = {
             "cd ~/p/dotfiles; claude --dangerously-skip-permissions \"$(cat ~/o/business/knowledge/development/workspace-prompts/local-dev-env.md)\"\r",
-            "cd ~/p/dotfiles\r",
         },
     },
 }
@@ -248,7 +276,10 @@ local function spawn_layout(window, pane, layout)
     local cs = layout.col_split or 0.5
     local rs = layout.row_split or 0.5
 
-    if layout.grid == "2x2" then
+    if layout.grid == "1x1" then
+        panes = { pane }
+
+    elseif layout.grid == "2x2" then
         local right = pane:split({ direction = "Right", size = cs })
         local bottom_left = pane:split({ direction = "Bottom", size = rs })
         local bottom_right = right:split({ direction = "Bottom", size = rs })
@@ -270,12 +301,69 @@ local function spawn_layout(window, pane, layout)
         local bot_right = right:split({ direction = "Bottom", size = rs })
         local bot_right_right = bot_right:split({ direction = "Right", size = 0.5 })
         panes = { pane, right, bot_left, bot_right, bot_right_right }
+
+    elseif layout.grid == "1+2x2" then
+        -- Top row: single pane spanning full width.
+        -- Bottom: 2x2 grid (mid-left, mid-right, bot-left, bot-right).
+        -- row_split = size of the lower region (the 2x2). Default 0.7 (70% bottom, 30% top).
+        -- Panes (T→B, L→R): top-full, mid-left, mid-right, bot-left, bot-right
+        local lower_size = layout.row_split or 0.7
+        local mid_left = pane:split({ direction = "Bottom", size = lower_size })
+        local mid_right = mid_left:split({ direction = "Right", size = 0.5 })
+        local bot_left = mid_left:split({ direction = "Bottom", size = 0.5 })
+        local bot_right = mid_right:split({ direction = "Bottom", size = 0.5 })
+        panes = { pane, mid_left, mid_right, bot_left, bot_right }
+
+    elseif layout.grid == "2+2x2" then
+        -- Top row: 2 panes side by side. Bottom: 2x2 grid (4 panes).
+        -- row_split = size of the lower region. Default 0.7 (70% bottom, 30% top).
+        -- Panes (T→B, L→R): top-left, top-right, mid-left, mid-right, bot-left, bot-right
+        --
+        -- Split order matters: do the horizontal (Bottom) split FIRST so it spans
+        -- the full window, then split top + bottom regions independently.
+        -- Doing the Right split first would leave the right column full-height
+        -- and the Bottom split would only carve the left column.
+        local lower_size = layout.row_split or 0.7
+        local mid_left = pane:split({ direction = "Bottom", size = lower_size })
+        local top_right = pane:split({ direction = "Right", size = 0.5 })
+        local mid_right = mid_left:split({ direction = "Right", size = 0.5 })
+        local bot_left = mid_left:split({ direction = "Bottom", size = 0.5 })
+        local bot_right = mid_right:split({ direction = "Bottom", size = 0.5 })
+        panes = { pane, top_right, mid_left, mid_right, bot_left, bot_right }
     end
 
     -- Send commands to each pane
     for i, p in ipairs(panes) do
         if layout.panes[i] and layout.panes[i] ~= "" then
             p:send_text(layout.panes[i])
+        end
+    end
+
+    -- Spawn any extra standalone windows (separate from the main grid).
+    -- Note: passing `cwd` to spawn_window is unreliable on Windows — the
+    -- user's PowerShell profile runs Set-Location on boot and overrides it.
+    -- Same gotcha documented in ~/.claude/skills/wezterm/SKILL.md and worked
+    -- around in scripts/new-window.ps1 (which sleeps ~2s after spawn before
+    -- sending the cd). We replicate that here with wezterm.time.call_after:
+    -- send the cd 2s after spawn (after the profile has finished loading
+    -- and stopped consuming keystrokes), then send the cmd 400ms later.
+    if layout.extra_windows then
+        for _, w in ipairs(layout.extra_windows) do
+            local _tab, new_pane, _win = wezterm.mux.spawn_window({
+                cwd = w.cwd,
+            })
+            if new_pane then
+                wezterm.time.call_after(2, function()
+                    if w.cwd and w.cwd ~= "" then
+                        new_pane:send_text('cd "' .. w.cwd .. '"\r')
+                    end
+                    wezterm.time.call_after(0.4, function()
+                        if w.cmd and w.cmd ~= "" then
+                            new_pane:send_text(w.cmd)
+                        end
+                    end)
+                end)
+            end
         end
     end
 end

@@ -240,16 +240,20 @@ local layouts = {
     {
         -- Subagent observability dashboard (disler/claude-code-hooks-multi-agent-observability).
         -- Hooks in ~/.claude/hooks/observability/ post events to the server on :4000;
-        -- the Vue client at :5173 visualizes them. Leave this layout running in its own
+        -- the Vue client at :6173 visualizes them. Leave this layout running in its own
         -- wezterm window — every other Claude Code session will stream into it automatically.
+        --
+        -- Port note: vite's default 5173 falls inside Windows' reserved port range
+        -- (5141–5240) on this machine and produces EACCES at bind time, so we pin
+        -- VITE_PORT=6173 which is outside every reserved block.
         label = "Subagent Observability (server + dashboard)",
         grid = "1x2",
         row_split = 0.5,
         panes = {
             -- Top: Bun server (HTTP :4000 + WebSocket /stream, SQLite at apps/server/events.db)
             "cd ~/p/tools/claude-code-hooks-multi-agent-observability/apps/server; bun install; bun run dev\r",
-            -- Bottom: Vite dev server for the Vue dashboard. Open http://localhost:5173 once it boots.
-            "cd ~/p/tools/claude-code-hooks-multi-agent-observability/apps/client; bun install; bun run dev\r",
+            -- Bottom: Vite dev server for the Vue dashboard. Open http://localhost:6173 once it boots.
+            "cd ~/p/tools/claude-code-hooks-multi-agent-observability/apps/client; $env:VITE_PORT=6173; bun install; bun run dev\r",
         },
     },
 }

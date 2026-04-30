@@ -237,6 +237,21 @@ local layouts = {
             "cd ~/p/dotfiles; claude --dangerously-skip-permissions \"$(cat ~/o/business/knowledge/development/workspace-prompts/local-dev-env.md)\"\r",
         },
     },
+    {
+        -- Subagent observability dashboard (disler/claude-code-hooks-multi-agent-observability).
+        -- Hooks in ~/.claude/hooks/observability/ post events to the server on :4000;
+        -- the Vue client at :5173 visualizes them. Leave this layout running in its own
+        -- wezterm window — every other Claude Code session will stream into it automatically.
+        label = "Subagent Observability (server + dashboard)",
+        grid = "1x2",
+        row_split = 0.5,
+        panes = {
+            -- Top: Bun server (HTTP :4000 + WebSocket /stream, SQLite at apps/server/events.db)
+            "cd ~/p/tools/claude-code-hooks-multi-agent-observability/apps/server; bun install; bun run dev\r",
+            -- Bottom: Vite dev server for the Vue dashboard. Open http://localhost:5173 once it boots.
+            "cd ~/p/tools/claude-code-hooks-multi-agent-observability/apps/client; bun install; bun run dev\r",
+        },
+    },
 }
 
 local layout_choices = {}

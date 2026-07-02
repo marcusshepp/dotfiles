@@ -269,8 +269,11 @@ function pi-plan-analyze {
     pi -ne -ns -np --no-themes -e packages/pi-runner-analyst/extensions/index.ts;
 }
 
-# Tavily API key for Pi web search extension
-$env:TAVILY_API_KEY = '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'
+# Tavily API key for Pi web search extension — loaded from a gitignored local
+# file so the secret never lands in this (public) dotfiles repo. To rotate:
+# regenerate in the Tavily dashboard, then update ~/.config/secrets/tavily.key.
+$tavilyKeyFile = "$HOME\.config\secrets\tavily.key"
+if (Test-Path $tavilyKeyFile) { $env:TAVILY_API_KEY = (Get-Content $tavilyKeyFile -Raw).Trim() }
 
 # just (command runner)
 Set-Alias -Name j -Value just

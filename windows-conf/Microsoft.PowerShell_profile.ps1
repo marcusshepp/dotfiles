@@ -105,7 +105,16 @@ function touch {
 # -----------------------------------------------------------------------------
 
 function cl {
-    claude --dangerously-skip-permissions
+    claude --dangerously-skip-permissions @args
+}
+
+if (Test-Path Alias:cls) { Remove-Item Alias:cls -Force }
+function cls {
+    claude --dangerously-skip-permissions --model sonnet @args
+}
+
+function clo {
+    claude --dangerously-skip-permissions --model opus @args
 }
 
 # -----------------------------------------------------------------------------
@@ -113,18 +122,15 @@ function cl {
 # -----------------------------------------------------------------------------
 
 $projects = @{
-    sr = "~/p/internal/sync.runner"
-    sp = "~/p/internal/sync.portal"
-    si = "~/p/internal/sync.infra"
+    sr = "~/p/i/sync.runner"
+    sp = "~/p/i/sync.portal"
+    si = "~/p/i/sync.infra"
 }
 
 function p {
-    param([Parameter(Mandatory = $true)][string]$key)
-    if ($projects.ContainsKey($key)) {
-        Set-Location $projects[$key]
-    } else {
-        Write-Host "Unknown project: $key. Options: $($projects.Keys -join ', ')"
-    }
+    Set-Location ~/p/i/p
+    git checkout develop
+    git pull origin develop
 }
 
 function n {
@@ -181,20 +187,75 @@ function bw-personal-unlock {
 }
 
 # -----------------------------------------------------------------------------
+# Hermes Engine (EC2 i-0ef2548b845d06c07)
+# -----------------------------------------------------------------------------
+# he          → drop straight into hermes
+# he shell    → plain ubuntu login shell (for hermes update, etc.)
+
+function he {
+    param([string]$Mode = "")
+
+    $target = "i-0ef2548b845d06c07"
+
+    $cmd = switch ($Mode) {
+        "shell" { "sudo -iu ubuntu bash -l" }
+        default { "sudo -iu ubuntu bash -lc hermes" }
+    }
+
+    aws ssm start-session `
+        --target $target `
+        --document-name AWS-StartInteractiveCommand `
+        --parameters "{`"command`":[`"$cmd`"]}"
+}
+
+# -----------------------------------------------------------------------------
+# Iron Tower  (Tailscale: iron-tower / 100.101.121.61)
+# -----------------------------------------------------------------------------
+# it          → attach tmux "main" (auto-reclaims a swept socket; starts Claude Code if new)
+# it shell    → attach tmux "main" as a plain shell
+# it list     → list sessions + live tmux server processes
+# it reclaim  → force the orphaned server to recreate its socket, then attach
+
+function it {
+    param([string]$Mode = "")
+
+    # If /tmp's tmux socket was swept but a server is still alive, `tmux ls` fails
+    # and a bare new-session would spawn a SECOND, orphaned server. Detect the
+    # missing socket and SIGUSR1 the daemonized server (PPID 1, cmdline starting
+    # "tmux") so it recreates the socket and -A can reattach. Matches nothing =
+    # harmless no-op. Prevents the 2026-07-02 orphaned-server split.
+    $reclaim = "tmux ls >/dev/null 2>&1 || { pkill -USR1 -o -P 1 -f '^tmux'; sleep 1; }; "
+
+    switch ($Mode) {
+        "shell"   { ssh -t marcusshep@iron-tower "$reclaim tmux new-session -A -s main" }
+        "list"    { ssh marcusshep@iron-tower "tmux ls 2>/dev/null || echo 'No tmux sessions (socket may be swept)'; echo '--- tmux servers ---'; pgrep -a -P 1 -f '^tmux' || echo none" }
+        "reclaim" { ssh marcusshep@iron-tower "pkill -USR1 -o -P 1 -f '^tmux' && sleep 1 && tmux ls" }
+        default   { ssh -t marcusshep@iron-tower "$reclaim tmux new-session -A -s main '~/.local/bin/claude --dangerously-skip-permissions'" }
+    }
+}
+
+# -----------------------------------------------------------------------------
 # Startup
 # -----------------------------------------------------------------------------
 
 Set-Location ~/o
 
-# Oh My Posh prompt
-oh-my-posh init pwsh --config 'https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/space.omp.json' | Invoke-Expression
+# Oh My Posh prompt — use a LOCAL theme so shell startup never depends on
+# GitHub being reachable (the remote --config URL was what printed "CONFIG URL FETCH FAILED").
+# To refresh the theme: iwr 'https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/space.omp.json' -OutFile "$HOME\.config\oh-my-posh\space.omp.json"
+$poshTheme = "$HOME\.config\oh-my-posh\space.omp.json"
+if (Test-Path $poshTheme) {
+    oh-my-posh init pwsh --config $poshTheme | Invoke-Expression
+} else {
+    oh-my-posh init pwsh | Invoke-Expression
+}
 
 # AWS Profile
 $env:AWS_PROFILE = 'sir-code-alot'
 
 # Pi local runner (plan authoring + analysis + execution)
 function lrun {
-    Set-Location ~/p/internal/sync.runner
+    Set-Location ~/p/i/sync.runner
     pi -ne -ns -np --no-themes `
         --provider github-copilot --model claude-opus-4.6 `
         -e packages/pi-local-runner/extensions/index.ts `
@@ -204,9 +265,19 @@ function lrun {
 }
 
 function pi-plan-analyze {
-    Set-Location ~/p/internal/sync.runner/;
+    Set-Location ~/p/i/sync.runner/;
     pi -ne -ns -np --no-themes -e packages/pi-runner-analyst/extensions/index.ts;
 }
 
 # Tavily API key for Pi web search extension
 $env:TAVILY_API_KEY = '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'
+
+# just (command runner)
+Set-Alias -Name j -Value just
+
+# Add Git's usr/bin to PATH so `just` can find sh.exe and cygpath.exe
+# (recipes with #!/usr/bin/env bash shebangs need cygpath; plain recipes need sh)
+$gitUsrBin = 'C:\Program Files\Git\usr\bin'
+if ((Test-Path $gitUsrBin) -and ($env:Path -notlike "*$gitUsrBin*")) {
+    $env:Path += ";$gitUsrBin"
+}

@@ -159,10 +159,10 @@ local layouts = {
         grid = "2x2",
         row_split = 0.2,
         panes = {
-            "cd ~/p/i/sync.runner; claude --dangerously-skip-permissions \"$(cat ~/o/business/knowledge/development/workspace-prompts/runner-dev-planning.md)\"\r",
-            "cd ~/p/i/sync.runner; claude --dangerously-skip-permissions \"$(cat ~/o/business/knowledge/development/workspace-prompts/runner-monitor-loop.md)\"\r",
-            "cd ~/p/i/sync.runner\r",
-            "cd ~/p/i/sync.runner; bun run dev\r",
+            "cd ~/p/i/p; claude --dangerously-skip-permissions \"$(cat ~/o/business/knowledge/development/workspace-prompts/runner-dev-planning.md)\"\r",
+            "cd ~/p/i/p; claude --dangerously-skip-permissions \"$(cat ~/o/business/knowledge/development/workspace-prompts/runner-monitor-loop.md)\"\r",
+            "cd ~/p/i/p/packages/runner\r",
+            "cd ~/p/i/p/packages/runner; bun run dev\r",
         },
     },
     {

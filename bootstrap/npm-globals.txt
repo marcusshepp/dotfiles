@@ -1,0 +1,19 @@
+# Global npm CLI tooling worth reproducing. Install with:
+#   Get-Content bootstrap/npm-globals.txt | ? { $_ -and $_ -notmatch '^#' } | % { npm i -g $_ }   (Windows)
+#   grep -v '^#' bootstrap/npm-globals.txt | xargs -r npm i -g                                      (Linux)
+# Language servers + formatters used by the Neovim / VS Code configs:
+typescript
+typescript-language-server
+prettier
+@olrtg/emmet-language-server
+# Everyday dev CLIs:
+@bitwarden/cli
+netlify-cli
+stripe
+sharp-cli
+@playwright/cli
+agent-browser
+# AI coding CLIs (optional — Codex/Claude also ship as winget apps):
+@openai/codex
+@google/gemini-cli
+opencode-ai

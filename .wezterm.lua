@@ -60,7 +60,7 @@ local function pick_background()
     return img_dir .. images[1].file
 end
 
-config.font_size = 8.0
+config.font_size = 12.0
 config.font = wezterm.font("Cascadia Code")
 config.color_scheme = "Dracula"
 config.enable_tab_bar = false
@@ -83,6 +83,32 @@ config.colors = {
 }
 
 config.default_prog = { "pwsh" }
+
+-- === STABILITY UNDER A LARGE FLEET (twine) — added 2026-06-03 after the freeze ===
+-- All twine-spawned agent windows live in ONE wezterm-gui process and one
+-- single-threaded scheduler ("wezterm cli spawn --new-window" injects into the
+-- running GUI/mux, it does NOT start a new process). With ~15 continuously
+-- redrawing Claude Code TUIs, that single process's render/scheduler work piles
+-- up until the whole GUI stops responding after a few hours — the 2026-06-03
+-- cascade where every window went "Not responding" one by one while RAM was fine.
+-- These settings pin the stable Windows front-end and cut the per-window idle
+-- render cost that gets multiplied across every open window. They do not change
+-- the single-process topology (twine depends on it for cross-window addressing) —
+-- they raise the ceiling. Postmortem + guidance:
+-- ~/o/business/projects/internal/twine/freeze-postmortem.md
+config.front_end = "OpenGL"      -- pin the stable Windows default; avoid the WebGpu hang class
+config.max_fps = 30              -- halve the frame budget — terminal TUIs don't need 60fps
+config.animation_fps = 1         -- near-disable animation re-renders (idle cost is paid per window)
+config.cursor_blink_rate = 0     -- stop the blinking cursor's continuous repaint (cost × every window)
+-- Belt-and-suspenders: force a steady cursor even if an app inside (Claude Code TUI,
+-- PSReadLine) sends a DECSCUSR "blinking" style. default_cursor_style only governs the
+-- default, but pairing it with rate=0 is the documented "never blink" combo. The
+-- Constant easings disable the fade animation so that, at animation_fps=1, no half-faded
+-- frame can read as a slow flicker. WezTerm auto-reloads this file so it should apply
+-- live; if a long-lived twine gui keeps blinking, fully quit + relaunch that gui process.
+config.default_cursor_style = "SteadyBlock"
+config.cursor_blink_ease_in = "Constant"
+config.cursor_blink_ease_out = "Constant"
 
 -- Let ALT keys pass through to the OS (for GlazeWM keybinds)
 config.send_composed_key_when_left_alt_is_pressed = false
@@ -133,10 +159,10 @@ local layouts = {
         grid = "2x2",
         row_split = 0.2,
         panes = {
-            "cd ~/p/internal/sync.runner; claude --dangerously-skip-permissions \"$(cat ~/o/business/knowledge/development/workspace-prompts/runner-dev-planning.md)\"\r",
-            "cd ~/p/internal/sync.runner; claude --dangerously-skip-permissions \"$(cat ~/o/business/knowledge/development/workspace-prompts/runner-monitor-loop.md)\"\r",
-            "cd ~/p/internal/sync.runner\r",
-            "cd ~/p/internal/sync.runner; bun run dev\r",
+            "cd ~/p/i/sync.runner; claude --dangerously-skip-permissions \"$(cat ~/o/business/knowledge/development/workspace-prompts/runner-dev-planning.md)\"\r",
+            "cd ~/p/i/sync.runner; claude --dangerously-skip-permissions \"$(cat ~/o/business/knowledge/development/workspace-prompts/runner-monitor-loop.md)\"\r",
+            "cd ~/p/i/sync.runner\r",
+            "cd ~/p/i/sync.runner; bun run dev\r",
         },
     },
     {
@@ -157,6 +183,13 @@ local layouts = {
             "& $HOME/p/_agent-workspace/portal/launch-claude-mcp.ps1 platinum-roofing analytics $HOME/o/business/knowledge/development/workspace-prompts/platinum-roof/ga-collection.md\r",
             -- 6: bot-right — Google Ads scraper (headless plat-gmb-ads).
             "claude --dangerously-skip-permissions \"$(cat ~/o/business/knowledge/development/workspace-prompts/platinum-roof/ads-collection.md)\"\r",
+        },
+    },
+    {
+        label = "Magnify Local Dev",
+        grid = "1x1",
+        panes = {
+            "claude --dangerously-skip-permissions \"$(cat ~/o/business/knowledge/development/workspace-prompts/magnify-local-dev.md)\"\r",
         },
     },
     {
@@ -225,8 +258,8 @@ local layouts = {
         grid = "2x2",
         panes = {
             "claude --dangerously-skip-permissions\r",
-            "cd ~/p/internal/sync.infra\r",
-            "cd ~/p/internal/sync.runner/packages/cli\r",
+            "cd ~/p/i/sync.infra\r",
+            "cd ~/p/i/sync.runner/packages/cli\r",
             "\r",
         },
     },
@@ -380,6 +413,10 @@ local function spawn_layout(window, pane, layout)
                         if w.cmd and w.cmd ~= "" then
                             new_pane:send_text(w.cmd)
                         end
+                        if w.split_right then
+                            local right = new_pane:split({ direction = "Right", size = 0.5 })
+                            right:send_text(w.split_right)
+                        end
                     end)
                 end)
             end
@@ -510,12 +547,9 @@ config.keys = {
         action = wezterm.action.CloseCurrentPane { confirm = true },
     },
 
-    -- Ctrl+U: clear the current command line (PSReadLine RevertLine via Escape)
-    {
-        key = 'u',
-        mods = 'CTRL',
-        action = wezterm.action.SendKey { key = 'Escape' },
-    },
+    -- Ctrl+U intentionally NOT bound here: a SendKey{Escape} remap broke
+    -- Ctrl+U scroll-up inside nvim. Clear-line at the pwsh prompt is handled
+    -- by PSReadLine (Set-PSReadLineKeyHandler Ctrl+u RevertLine) in $PROFILE.
 
     {
         key = 'M',

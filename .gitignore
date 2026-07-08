@@ -1,1 +1,22 @@
+# Claude Code local state
 .claude/
+
+# Runtime junk / logs (never belongs in a public dotfiles repo)
+logs/
+**/logs/
+*.log
+.playwright-cli/
+node_modules/
+
+# Defensive: this repo is PUBLIC — never commit anything secret-shaped.
+# Secrets live in SSM / Bitwarden / ~/.aws — configs here load them at runtime.
+*.pem
+*.key
+*.pfx
+id_rsa*
+id_ed25519*
+*.secret
+.env
+.env.*
+*credentials*
+*.tavily

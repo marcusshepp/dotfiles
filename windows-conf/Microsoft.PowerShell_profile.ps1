@@ -133,6 +133,11 @@ function p {
     git pull origin develop
 }
 
+function pc {
+    p
+    cl @args
+}
+
 function n {
     param([Parameter(Mandatory = $true)][string]$key)
     if ($projects.ContainsKey($key)) {
@@ -284,3 +289,7 @@ $gitUsrBin = 'C:\Program Files\Git\usr\bin'
 if ((Test-Path $gitUsrBin) -and ($env:Path -notlike "*$gitUsrBin*")) {
     $env:Path += ";$gitUsrBin"
 }
+
+# Ctrl+U clears the current command line (moved here from a WezTerm SendKey{Escape}
+# remap that was hijacking Ctrl+U inside nvim)
+Set-PSReadLineKeyHandler -Key Ctrl+u -Function RevertLine

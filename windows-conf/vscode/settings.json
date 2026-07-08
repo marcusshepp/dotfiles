@@ -1,0 +1,55 @@
+{
+  "github.copilot.nextEditSuggestions.enabled": false,
+  "chat.mcp.gallery.enabled": true,
+  "prisma.hidePrisma6Prompts": true,
+  "chat.tools.urls.autoApprove": {
+    "https://www.reddit.com/r/HomeInspections/search": true,
+    "https://www.reddit.com/r/HomeInspections": true,
+    "https://www.reddit.com/r": true,
+    "https://www.reddit.com": true,
+    "https://*.reddit.com": true,
+    "https://www.reddit.com/r/HomeInspections/comments": true,
+    "https://www.trustpilot.com/review/spectora.com": true,
+    "https://www.trustpilot.com/review": true,
+    "https://www.trustpilot.com": true,
+    "https://*.trustpilot.com": true,
+    "https://www.g2.com/products/spectora/reviews": true,
+    "https://www.g2.com/products/spectora": true,
+    "https://www.g2.com/products": true,
+    "https://*.g2.com": true,
+    "https://www.capterra.com/p": true,
+    "https://www.capterra.com": true,
+    "https://*.capterra.com": true,
+    "https://www.linkedin.com": {
+      "approveRequest": true,
+      "approveResponse": false
+    }
+  },
+  "extensions.ignoreRecommendations": true,
+  "workbench.editorAssociations": {
+    "*.md": "vscode.markdown.preview.editor"
+  },
+  "workbench.activityBar.location": "hidden",
+  "background.enabled": true,
+  "background.fullscreen": {
+    "images": [
+      "file:///C:/Users/marcu/p/dotfiles/img/anime-dark-4-dark.jpg"
+    ],
+    "opacity": 0.2,
+    "size": "cover",
+    "position": "center",
+    "interval": 0,
+    "random": false
+  },
+  "workbench.colorTheme": "ƒ - Gruvbox - Operator Mono/Italic",
+  "breadcrumbs.enabled": true,
+  "editor.lineNumbers": "relative",
+  "vim.normalModeKeyBindingsNonRecursive": [
+    {
+      "before": ["g", "r"],
+      "commands": ["editor.action.referenceSearch.trigger"]
+    }
+  ],
+  "workbench.secondarySideBar.defaultVisibility": "hidden",
+  "git.blame.editorDecoration.enabled": true
+}

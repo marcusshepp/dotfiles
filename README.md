@@ -6,6 +6,36 @@ A meticulously curated collection of development environment configurations, des
 
 This repository contains my personal development environment configurations, carefully organized to support a consistent experience across multiple machines and operating systems. It includes configurations for terminal emulators, window managers, and development tools, with automated setup scripts for easy deployment.
 
+> **No secrets live here.** This repo is public. SSH keys, AWS/SSO creds, Bitwarden, and API keys are never committed — configs load them from SSM / `~/.aws` / Bitwarden / gitignored files at runtime. See `.gitignore`.
+
+## 🔁 Reproduce this environment
+
+One command per OS provisions the toolchain and links every config into place. Both scripts are idempotent (safe to re-run) and finish by printing the manual, secret-bearing steps (SSH keygen, AWS SSO, Bitwarden, Tailscale) that can't be automated from a public repo.
+
+**Windows** (elevated PowerShell 7):
+
+```powershell
+git clone https://github.com/marcusshepp/dotfiles ~/p/dotfiles
+~/p/dotfiles/windows-scripts/bootstrap.ps1
+```
+
+**Ubuntu / Debian / WSL:**
+
+```bash
+git clone https://github.com/marcusshepp/dotfiles ~/p/dotfiles
+bash ~/p/dotfiles/linux-scripts/bootstrap.sh
+```
+
+What the bootstrap installs is version-controlled in [`bootstrap/`](bootstrap/):
+
+| File | Purpose |
+|------|---------|
+| `bootstrap/winget-packages.json` | Windows package manifest (`winget import`). Regenerate the raw superset with `winget export`. |
+| `bootstrap/npm-globals.txt` | Global npm CLIs + language servers (both OSes). |
+| `bootstrap/vscode-extensions.txt` | VS Code / Cursor extensions (both OSes). |
+
+To refresh the **backup** after changing configs on Windows, run `windows-scripts/backup-configs.ps1`, then commit and push.
+
 ## 🛠️ Technology Stack
 
 ### Windows Environment
@@ -28,11 +58,11 @@ Currently, symlinks are manually created to map configuration files from this re
 
 ## 🛠️ Planned Improvements
 
-- [ ] Automated symlink creation scripts
+- [x] Automated symlink creation scripts (`bootstrap.ps1` / `bootstrap.sh`)
+- [x] Cross-platform configuration synchronization (Windows + Ubuntu bootstrap)
+- [x] Backup and restore functionality (`backup-configs.ps1` capture + bootstrap restore)
 - [ ] Version tracking and update notifications
 - [ ] Configuration validation tests
-- [ ] Cross-platform configuration synchronization
-- [ ] Backup and restore functionality
 - [ ] Plugin version management
 - [ ] Documentation for each tool's configuration
 

@@ -7,6 +7,8 @@ return {
     opts = {
         heading = {
             sign = false,
+            position = "inline",
+            icons = { "", "", "", "", "", "" },
             width = "block",
             left_pad = 1,
             right_pad = 2,

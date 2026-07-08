@@ -1,0 +1,12 @@
+# VS Code / Cursor extensions — install with:
+#   Get-Content bootstrap/vscode-extensions.txt | ? { $_ -and $_ -notmatch '^#' } | % { code --install-extension $_ }
+# (bootstrap.ps1 / bootstrap.sh do this for you)
+bradlc.vscode-tailwindcss
+esbenp.prettier-vscode
+golang.go
+ms-vscode.powershell
+ms-vscode.vscode-typescript-next
+prisma.prisma
+vscodevim.vim
+shalldie.background
+sldobri.daily

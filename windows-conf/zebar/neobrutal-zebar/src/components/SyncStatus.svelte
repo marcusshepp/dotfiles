@@ -91,7 +91,7 @@
         <i class="ti ti-currency-dollar {status.awsCost && status.awsCost.today > 5 ? 'text-red-400' : 'text-emerald-400'}"></i>
         {#if status.awsCost}
           <span class="font-mono font-bold">${status.awsCost.today.toFixed(2)}</span>
-          <span class="text-xs opacity-50">today</span>
+          <span class="text-xs opacity-50">yesterday</span>
         {:else}
           <span class="font-mono opacity-40">—</span>
         {/if}

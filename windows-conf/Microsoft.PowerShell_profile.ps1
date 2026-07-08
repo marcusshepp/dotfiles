@@ -121,10 +121,16 @@ function clo {
 # Project Shortcuts
 # -----------------------------------------------------------------------------
 
+# Everything now lives in the platform monorepo (~/p/i/p). The old split repos
+# (sync.portal, sync.infra) are retired; sr stays only for the pi-local-runner
+# tooling that never migrated out of the read-only sync.runner repo.
 $projects = @{
-    sr = "~/p/i/sync.runner"
-    sp = "~/p/i/sync.portal"
-    si = "~/p/i/sync.infra"
+    web = "~/p/i/p/apps/portal"   # was sp / sync.portal
+    api = "~/p/i/p/api"
+    inf = "~/p/i/p/infra"          # was si / sync.infra
+    lam = "~/p/i/p/lambdas"
+    pkg = "~/p/i/p/packages"
+    sr  = "~/p/i/sync.runner"      # legacy read-only repo (pi-local-runner only)
 }
 
 function p {

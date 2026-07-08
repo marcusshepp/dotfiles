@@ -149,8 +149,8 @@ local layouts = {
         },
         extra_windows = {
             {
-                cwd = "C:\\Users\\marcu\\p\\internal\\sync.portal",
-                cmd = "npm run dev\r",
+                cwd = "C:\\Users\\marcu\\p\\i\\p\\apps\\portal",
+                cmd = "bun run dev\r",
             },
         },
     },
@@ -258,8 +258,8 @@ local layouts = {
         grid = "2x2",
         panes = {
             "claude --dangerously-skip-permissions\r",
-            "cd ~/p/i/sync.infra\r",
-            "cd ~/p/i/sync.runner/packages/cli\r",
+            "cd ~/p/i/p/infra\r",
+            "cd ~/p/i/p/bin/sync-cli\r",
             "\r",
         },
     },

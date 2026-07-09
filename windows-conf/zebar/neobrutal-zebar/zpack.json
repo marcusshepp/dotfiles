@@ -12,11 +12,11 @@
       "htmlPath": "./build/index.html",
       "zOrder": "normal",
       "shownInTaskbar": false,
-      "focused": true,
+      "focused": false,
       "resizable": false,
       "transparent": true,
       "includeFiles": [
-        "**/**"
+        "build/**"
       ],
       "caching": {
         "defaultDuration": 604800,

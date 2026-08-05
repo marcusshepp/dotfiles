@@ -1,0 +1,249 @@
+{
+    "$help": "https://aka.ms/terminal-documentation",
+    "$schema": "https://aka.ms/terminal-profiles-schema",
+    "actions":
+    [
+        { "command": "prevTab", "id": "User.WezTermPreviousTab" },
+        { "command": "nextTab", "id": "User.WezTermNextTab" },
+        { "command": { "action": "switchToTab", "index": 0 }, "id": "User.WezTermTab1" },
+        { "command": { "action": "switchToTab", "index": 1 }, "id": "User.WezTermTab2" },
+        { "command": { "action": "switchToTab", "index": 2 }, "id": "User.WezTermTab3" },
+        { "command": { "action": "switchToTab", "index": 3 }, "id": "User.WezTermTab4" },
+        { "command": { "action": "switchToTab", "index": 4 }, "id": "User.WezTermTab5" },
+        { "command": { "action": "switchToTab", "index": 5 }, "id": "User.WezTermTab6" },
+        { "command": { "action": "switchToTab", "index": 6 }, "id": "User.WezTermTab7" },
+        { "command": { "action": "switchToTab", "index": 7 }, "id": "User.WezTermTab8" },
+        { "command": { "action": "switchToTab", "index": 8 }, "id": "User.WezTermTab9" },
+        { "command": { "action": "moveFocus", "direction": "left" }, "id": "User.WezTermFocusLeft" },
+        { "command": { "action": "moveFocus", "direction": "down" }, "id": "User.WezTermFocusDown" },
+        { "command": { "action": "moveFocus", "direction": "up" }, "id": "User.WezTermFocusUp" },
+        { "command": { "action": "moveFocus", "direction": "right" }, "id": "User.WezTermFocusRight" },
+        { "command": { "action": "splitPane", "splitMode": "duplicate", "split": "vertical" }, "id": "User.WezTermSplitSideBySide" },
+        { "command": { "action": "splitPane", "splitMode": "duplicate", "split": "horizontal" }, "id": "User.WezTermSplitTopBottom" },
+        { "command": "closePane", "id": "User.WezTermClosePane" },
+        { "command": "closeTab", "id": "User.WezTermCloseTab" },
+        { "command": "openTabRenamer", "id": "User.RenameCurrentTab" }
+    ],
+    "copyFormatting": "none",
+    "copyOnSelect": false,
+    "defaultProfile": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+    "keybindings": 
+    [
+        {
+            "id": "Terminal.CopyToClipboard",
+            "keys": "ctrl+c"
+        },
+        {
+            "id": "Terminal.FindText",
+            "keys": "ctrl+shift+f"
+        },
+        {
+            "id": "Terminal.PasteFromClipboard",
+            "keys": "ctrl+v"
+        },
+        {
+            "id": "Terminal.DuplicatePaneAuto",
+            "keys": "alt+shift+d"
+        },
+        {
+            "id": "User.WezTermPreviousTab",
+            "keys": "ctrl+shift+m"
+        },
+        {
+            "id": "User.WezTermNextTab",
+            "keys": "ctrl+shift+d"
+        },
+        {
+            "id": "User.WezTermTab1",
+            "keys": "ctrl+shift+1"
+        },
+        {
+            "id": "User.WezTermTab2",
+            "keys": "ctrl+shift+2"
+        },
+        {
+            "id": "User.WezTermTab3",
+            "keys": "ctrl+shift+3"
+        },
+        {
+            "id": "User.WezTermTab4",
+            "keys": "ctrl+shift+4"
+        },
+        {
+            "id": "User.WezTermTab5",
+            "keys": "ctrl+shift+5"
+        },
+        {
+            "id": "User.WezTermTab6",
+            "keys": "ctrl+shift+6"
+        },
+        {
+            "id": "User.WezTermTab7",
+            "keys": "ctrl+shift+7"
+        },
+        {
+            "id": "User.WezTermTab8",
+            "keys": "ctrl+shift+8"
+        },
+        {
+            "id": "User.WezTermTab9",
+            "keys": "ctrl+shift+9"
+        },
+        {
+            "id": "User.WezTermFocusLeft",
+            "keys": "ctrl+h"
+        },
+        {
+            "id": "User.WezTermFocusDown",
+            "keys": "ctrl+j"
+        },
+        {
+            "id": "User.WezTermFocusUp",
+            "keys": "ctrl+k"
+        },
+        {
+            "id": "User.WezTermFocusRight",
+            "keys": "ctrl+l"
+        },
+        {
+            "id": "User.WezTermSplitSideBySide",
+            "keys": "ctrl+alt+shift+5"
+        },
+        {
+            "id": "User.WezTermSplitTopBottom",
+            "keys": "ctrl+alt+shift+'"
+        },
+        {
+            "id": "User.WezTermClosePane",
+            "keys": "ctrl+q"
+        },
+        {
+            "id": "User.WezTermCloseTab",
+            "keys": "ctrl+shift+w"
+        },
+        {
+            "id": "User.RenameCurrentTab",
+            "keys": "ctrl+shift+r"
+        }
+    ],
+    "newTabMenu": 
+    [
+        {
+            "type": "remainingProfiles"
+        }
+    ],
+    "profiles": 
+    {
+        "defaults":
+        {
+            "bellStyle": "none",
+            "font":
+            {
+                "face": "Cascadia Code",
+                "size": 10
+            },
+            "colorScheme": "Tokyo Night",
+            "useAcrylic": false,
+            "opacity": 70,
+            "cursorShape": "filledBox",
+            "padding": "10",
+            "intenseTextStyle": "bright"
+        },
+        "list": 
+        [
+            {
+                "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+                "hidden": false,
+                "name": "Windows PowerShell"
+            },
+            {
+                "commandline": "%SystemRoot%\\System32\\cmd.exe",
+                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+                "hidden": false,
+                "name": "Command Prompt"
+            },
+            {
+                "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
+                "hidden": false,
+                "name": "Azure Cloud Shell",
+                "source": "Windows.Terminal.Azure"
+            },
+            {
+                "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+                "hidden": false,
+                "name": "PowerShell",
+                "source": "Windows.Terminal.PowershellCore"
+            },
+            {
+                "guid": "{e0e312bb-596b-509c-8286-c9b970927f49}",
+                "hidden": false,
+                "name": "Ubuntu",
+                "source": "Microsoft.WSL"
+            },
+            {
+                "guid": "{af7fe55c-32dc-5c8b-a71a-308aa413c264}",
+                "hidden": false,
+                "name": "Developer Command Prompt for VS 18",
+                "source": "Windows.Terminal.VisualStudio"
+            },
+            {
+                "guid": "{7ce8b6e9-44b3-5a54-a7a9-a62d595782a0}",
+                "hidden": false,
+                "name": "Developer PowerShell for VS 18",
+                "source": "Windows.Terminal.VisualStudio"
+            },
+            {
+                "guid": "{16208362-94fc-5b1f-a491-5b2624d5ab56}",
+                "hidden": true,
+                "name": "Visual Studio Debug Console",
+                "source": "VSDebugConsole"
+            }
+        ]
+    },
+    "schemes": [
+        {
+            "name": "Tokyo Night",
+            "background": "#121218",
+            "foreground": "#C0CAF5",
+            "cursorColor": "#C0CAF5",
+            "selectionBackground": "#283457",
+            "black": "#15161E",
+            "red": "#F7768E",
+            "green": "#9ECE6A",
+            "yellow": "#E0AF68",
+            "blue": "#7AA2F7",
+            "purple": "#BB9AF7",
+            "cyan": "#7DCFFF",
+            "white": "#A9B1D6",
+            "brightBlack": "#414868",
+            "brightRed": "#F7768E",
+            "brightGreen": "#9ECE6A",
+            "brightYellow": "#E0AF68",
+            "brightBlue": "#7AA2F7",
+            "brightPurple": "#BB9AF7",
+            "brightCyan": "#7DCFFF",
+            "brightWhite": "#C0CAF5"
+        }
+    ],
+    "themes": [
+        {
+            "name": "Tokyo Night Frame",
+            "tab":
+            {
+                "background": "#1A1B26FF",
+                "unfocusedBackground": "#16161EFF"
+            },
+            "tabRow":
+            {
+                "background": "#16161EFF",
+                "unfocusedBackground": "#16161EFF"
+            },
+            "window":
+            {
+                "applicationTheme": "dark"
+            }
+        }
+    ],
+    "theme": "Tokyo Night Frame"
+}

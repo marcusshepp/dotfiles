@@ -90,6 +90,8 @@ if (-not $SkipConfigs) {
     Link-Config "$HOME\.glzr\glazewm"                                 "$repo\windows-conf\glazewm"
     Link-Config "$HOME\.glzr\zebar"                                   "$repo\windows-conf\zebar"
     Link-Config "$env:APPDATA\Code\User\settings.json"               "$repo\windows-conf\vscode\settings.json"
+    Link-Config "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" `
+                                                                      "$repo\windows-conf\windows-terminal-settings.json"
 }
 
 Write-Host ''

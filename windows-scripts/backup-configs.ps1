@@ -27,6 +27,8 @@ Capture "$env:LOCALAPPDATA\nvim"                             "$repo\nvim"
 Capture "$HOME\.glzr\glazewm"                                "$repo\windows-conf\glazewm"
 Capture "$HOME\.glzr\zebar\settings.json"                    "$repo\windows-conf\zebar\settings.json"
 Capture "$env:APPDATA\Code\User\settings.json"              "$repo\windows-conf\vscode\settings.json"
+Capture "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" `
+                                                               "$repo\windows-conf\windows-terminal-settings.json"
 # .wezterm.lua is symlinked to the repo by setup-wezterm.ps1, so it needs no capture.
 
 Write-Host "`nDone. Review changes, then commit:" -ForegroundColor Green

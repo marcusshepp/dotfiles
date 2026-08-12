@@ -86,6 +86,7 @@ if (-not $SkipConfigs) {
     Link-Config "$docs\PowerShell\Microsoft.PowerShell_profile.ps1"    "$repo\windows-conf\Microsoft.PowerShell_profile.ps1"
     Link-Config "$HOME\.gitconfig"                                     "$repo\shared\.gitconfig"
     Link-Config "$HOME\.ssh\config"                                    "$repo\shared\ssh-config"
+    Link-Config "$HOME\.pi\agent\settings.json"                       "$repo\.pi\agent\settings.json"
     Link-Config "$env:LOCALAPPDATA\nvim"                              "$repo\nvim"
     Link-Config "$HOME\.glzr\glazewm"                                 "$repo\windows-conf\glazewm"
     Link-Config "$HOME\.glzr\zebar"                                   "$repo\windows-conf\zebar"

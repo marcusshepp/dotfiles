@@ -116,6 +116,7 @@ if [ "$SKIP_CONFIGS" -eq 0 ]; then
   link "$HOME/.config/nvim"         "$REPO/nvim"
   link "$HOME/.gitconfig"           "$REPO/shared/.gitconfig"
   link "$HOME/.ssh/config"          "$REPO/shared/ssh-config"
+  link "$HOME/.pi/agent/settings.json" "$REPO/.pi/agent/settings.json"
 fi
 
 cat <<'EOF'

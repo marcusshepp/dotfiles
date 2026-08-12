@@ -20,3 +20,10 @@ id_ed25519*
 .env.*
 *credentials*
 *.tavily
+
+# Pi Coding Agent: keep portable settings only. Auth, sessions, logs, generated
+# models, installed packages, and other runtime state must stay local.
+.pi/*
+!.pi/agent/
+.pi/agent/*
+!.pi/agent/settings.json

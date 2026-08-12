@@ -1,0 +1,21 @@
+{
+  "lastChangelogVersion": "0.83.0",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.6-sol",
+  "packages": [
+    "git:github.com/marcusshepp/pi-powerline-footer@215cc43a26a586bde643fbeb9c8c63e9852fafa8",
+    "https://github.com/otahontas/pi-coding-agent-catppuccin",
+    "git:github.com/marcusshepp/pi-subagents"
+  ],
+  "prompts": [
+    "~/.claude/commands"
+  ],
+  "showHardwareCursor": false,
+  "quietStartup": true,
+  "editorPaddingX": 3,
+  "steeringMode": "all",
+  "theme": "catppuccin-mocha",
+  "defaultThinkingLevel": "medium",
+  "powerline": "sync",
+  "powerlineIcons": "none"
+}

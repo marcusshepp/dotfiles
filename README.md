@@ -36,6 +36,10 @@ What the bootstrap installs is version-controlled in [`bootstrap/`](bootstrap/):
 
 To refresh the **backup** after changing configs on Windows, run `windows-scripts/backup-configs.ps1`, then commit and push.
 
+Pi Coding Agent's portable settings are stored at `.pi/agent/settings.json` and
+linked by both bootstrap scripts. Credentials, sessions, logs, installed packages,
+and generated runtime state remain local and are intentionally ignored.
+
 ## 🛠️ Technology Stack
 
 ### Windows Environment

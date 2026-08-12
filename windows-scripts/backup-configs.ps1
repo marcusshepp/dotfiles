@@ -29,7 +29,7 @@ Capture "$HOME\.glzr\zebar\settings.json"                    "$repo\windows-conf
 Capture "$env:APPDATA\Code\User\settings.json"              "$repo\windows-conf\vscode\settings.json"
 Capture "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" `
                                                                "$repo\windows-conf\windows-terminal-settings.json"
-# .wezterm.lua is symlinked to the repo by setup-wezterm.ps1, so it needs no capture.
+# .wezterm.lua and Pi settings are symlinked to the repo, so they need no capture.
 
 Write-Host "`nDone. Review changes, then commit:" -ForegroundColor Green
 Write-Host "  git -C $repo status" -ForegroundColor Gray

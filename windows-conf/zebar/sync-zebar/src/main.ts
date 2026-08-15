@@ -4,12 +4,11 @@ import * as zebar from "zebar";
 const API = "http://127.0.0.1:9876";
 
 /** Tiles that live in the centre ops cluster and can be switched off. */
-const TILE_ORDER = ["lugia", "tailscale", "aws", "agents", "sites", "analytics"] as const;
+const TILE_ORDER = ["lugia", "tailscale", "aws", "sites", "analytics"] as const;
 const TILE_LABELS: Record<string, string> = {
   lugia: "Lugia workers",
   tailscale: "Tailscale",
   aws: "AWS spend",
-  agents: "Runner agents",
   sites: "Site health",
   analytics: "Analytics",
 };
@@ -18,11 +17,6 @@ type Tiles = Record<string, boolean>;
 
 interface Status {
   awsCost: { today: number; month: number; forecast: number } | null;
-  agents: {
-    running: { name: string; portalId: string; progressCounters?: { completed: number; total: number } }[];
-    total: number;
-    failed: number;
-  } | null;
   sites: { down: string[]; total: number; checked: number } | null;
   analytics: { users: number; sessions: number; period: string } | null;
   lugia: { workers: number; names: string[]; session: string; reachable: boolean } | null;
@@ -246,26 +240,6 @@ function renderCenter(): string {
           ? `Yesterday: $${c.today.toFixed(2)}\nMonth to date: $${c.month.toFixed(2)}\nForecast: $${c.forecast.toFixed(0)}`
           : "AWS Cost Explorer unavailable",
         tile: "aws",
-      })
-    );
-  }
-
-  // --- Runner agents -------------------------------------------------
-  if (tiles.agents) {
-    const a = status.agents;
-    const running = a?.running.length ?? 0;
-    const detail = a
-      ? [`${a.total} agents, ${a.failed} failed`, "", ...(a.running.length ? a.running.map((r) => `▸ ${r.name} [${r.portalId}]`) : ["No active agents"])].join("\n")
-      : "runner-api unavailable";
-    parts.push(
-      pill({
-        icon: "ti-robot",
-        tone: running > 0 ? "info" : a && a.failed > 0 ? "bad" : "idle",
-        val: a ? String(running) : "—",
-        lbl: "running",
-        cls: a && a.failed > 0 ? "alert" : "",
-        title: detail,
-        tile: "agents",
       })
     );
   }

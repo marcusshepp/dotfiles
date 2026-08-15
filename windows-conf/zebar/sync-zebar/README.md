@@ -13,22 +13,21 @@ which one Zebar launches.
 | Cluster | Contents |
 |---------|----------|
 | Left    | GlazeWM workspaces (click to focus), tiling-direction toggle, binding modes, focused window title |
-| Centre  | Ops tiles — Lugia workers, Tailscale, AWS spend, runner agents, site health, analytics |
+| Centre  | Ops tiles — Lugia workers, Tailscale, AWS spend, site health, analytics |
 | Right   | CPU, memory, battery, volume, network, clock, tile switcher |
 
 ## Ops tiles
 
 Everything in the centre comes from the local status API
-(`~/.glzr/zebar/zebar-api/server.ts`, port 9876). The bar never talks to AWS,
-the runner, or Lugia directly — it only reads that one cached endpoint, so a
-slow or dead upstream can never stall the bar.
+(`~/.glzr/zebar/zebar-api/server.ts`, port 9876). The bar never talks to AWS or
+Lugia directly — it only reads that one cached endpoint, so a slow or dead
+upstream can never stall the bar.
 
 | Tile | Source | Refresh |
 |------|--------|---------|
 | `lugia` | `ssh lugia@lugia tmux list-windows -t main` — one worker per tmux window | 15s |
 | `tailscale` | `tailscale status --json` → `BackendState == "Running"` | 15s |
 | `aws` | Cost Explorer, yesterday's blended cost | 5min |
-| `agents` | `runner-api.syncgr.com/agents` | 5min |
 | `sites` | HEAD sweep of the monitored client sites | 5min |
 | `analytics` | GA4 via portal-api | 5min |
 

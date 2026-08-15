@@ -1,19 +1,6 @@
 <script lang="ts">
   import Group from "./Group.svelte";
 
-  interface AgentInfo {
-    agentId: string;
-    name: string;
-    status: string;
-    portalId: string;
-    progressCounters?: {
-      total: number;
-      completed: number;
-      failed: number;
-      pending: number;
-    };
-  }
-
   interface LugiaInfo {
     workers: number;
     names: string[];
@@ -32,7 +19,6 @@
 
   interface StatusData {
     awsCost: { today: number; month: number; forecast: number } | null;
-    agents: { running: AgentInfo[]; total: number; failed: number } | null;
     sites: { down: string[]; total: number; checked: number } | null;
     analytics: { users: number; sessions: number; period: string } | null;
     lugia: LugiaInfo | null;
@@ -75,23 +61,6 @@
   function costTooltip(cost: StatusData["awsCost"]): string {
     if (!cost) return "";
     return `Yesterday: $${cost.today.toFixed(2)}\nMTD: $${cost.month.toFixed(2)}\nForecast: $${cost.forecast.toFixed(0)}`;
-  }
-
-  function agentTooltip(agents: StatusData["agents"]): string {
-    if (!agents) return "";
-    const lines = [`${agents.total} total agents, ${agents.failed} failed`];
-    if (agents.running.length > 0) {
-      lines.push("");
-      for (const a of agents.running) {
-        const progress = a.progressCounters
-          ? ` (${a.progressCounters.completed}/${a.progressCounters.total})`
-          : "";
-        lines.push(`▶ ${a.name} [${a.portalId}]${progress}`);
-      }
-    } else {
-      lines.push("No active agents");
-    }
-    return lines.join("\n");
   }
 
   function siteTooltip(sites: StatusData["sites"]): string {
@@ -182,27 +151,6 @@
           {#if status.awsCost}
             <span class="font-mono font-bold">${status.awsCost.today.toFixed(2)}</span>
             <span class="text-xs opacity-50">yesterday</span>
-          {:else}
-            <span class="font-mono opacity-40">—</span>
-          {/if}
-        </div>
-      </Group>
-    {/if}
-
-    <!-- Agent Runner Status -->
-    {#if shown("agents")}
-      <Group class="shrink-0">
-        <div
-          class="flex items-center gap-1 text-sm cursor-default"
-          title={agentTooltip(status.agents)}
-        >
-          <i class="ti ti-robot {status.agents && status.agents.running.length > 0 ? 'text-blue-400' : status.agents && status.agents.failed > 0 ? 'text-red-400' : 'text-zinc-500'}"></i>
-          {#if status.agents}
-            <span class="font-mono font-bold">{status.agents.running.length}</span>
-            <span class="text-xs opacity-50">running</span>
-            {#if status.agents.failed > 0}
-              <span class="font-mono text-red-400 font-bold ml-1">{status.agents.failed}!</span>
-            {/if}
           {:else}
             <span class="font-mono opacity-40">—</span>
           {/if}

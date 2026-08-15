@@ -1,0 +1,50 @@
+{
+  "$schema": "https://github.com/glzr-io/zebar/raw/v3.3.1/resources/zpack-schema.json",
+  "name": "sync-zebar",
+  "version": "1.0.0",
+  "description": "Marcus's own Zebar bar — Lugia workers, Tailscale, toggleable ops tiles.",
+  "tags": ["bar", "sync"],
+  "previewImages": [],
+  "repositoryUrl": "",
+  "widgets": [
+    {
+      "name": "bar",
+      "htmlPath": "./build/index.html",
+      "zOrder": "normal",
+      "shownInTaskbar": false,
+      "focused": false,
+      "resizable": false,
+      "transparent": true,
+      "includeFiles": ["build/**"],
+      "caching": {
+        "defaultDuration": 0,
+        "rules": []
+      },
+      "privileges": {
+        "shellCommands": []
+      },
+      "presets": [
+        {
+          "name": "default",
+          "anchor": "top_left",
+          "offsetX": "0px",
+          "offsetY": "0px",
+          "width": "100%",
+          "height": "40px",
+          "monitorSelection": { "type": "all" },
+          "dockToEdge": { "enabled": true, "edge": null, "windowMargin": "0px" }
+        },
+        {
+          "name": "acer-only",
+          "anchor": "top_left",
+          "offsetX": "0px",
+          "offsetY": "0px",
+          "width": "100%",
+          "height": "40px",
+          "monitorSelection": { "type": "primary" },
+          "dockToEdge": { "enabled": true, "edge": null, "windowMargin": "0px" }
+        }
+      ]
+    }
+  ]
+}

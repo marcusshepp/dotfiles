@@ -14,16 +14,63 @@
     };
   }
 
+  interface LugiaInfo {
+    workers: number;
+    names: string[];
+    session: string;
+    reachable: boolean;
+  }
+
+  interface TailscaleInfo {
+    connected: boolean;
+    backendState: string;
+    self: string;
+    ip: string | null;
+    exitNode: string | null;
+    peersOnline: number;
+  }
+
   interface StatusData {
     awsCost: { today: number; month: number; forecast: number } | null;
     agents: { running: AgentInfo[]; total: number; failed: number } | null;
     sites: { down: string[]; total: number; checked: number } | null;
     analytics: { users: number; sessions: number; period: string } | null;
+    lugia: LugiaInfo | null;
+    tailscale: TailscaleInfo | null;
+    tiles: Record<string, boolean>;
     lastUpdated: string;
     errors: string[];
   }
 
   let status = $state<StatusData | null>(null);
+
+  // Tile visibility comes from the status API so `zbar tile <name> off`
+  // applies to both bar implementations. Unknown tiles default to visible.
+  function shown(id: string): boolean {
+    return status?.tiles?.[id] !== false;
+  }
+
+  function lugiaTooltip(lugia: LugiaInfo | null): string {
+    if (!lugia) return "Lugia unreachable — ssh lugia@lugia failed";
+    const lines = [
+      `tmux:${lugia.session} — ${lugia.workers} window${lugia.workers === 1 ? "" : "s"}`,
+    ];
+    lines.push("");
+    lines.push(...(lugia.names.length ? lugia.names.map((n) => `▶ ${n}`) : ["no workers"]));
+    return lines.join("\n");
+  }
+
+  function tailscaleTooltip(ts: TailscaleInfo | null): string {
+    if (!ts) return "tailscale status unavailable";
+    return [
+      `State: ${ts.backendState}`,
+      `Node: ${ts.self}${ts.ip ? ` (${ts.ip})` : ""}`,
+      `Peers online: ${ts.peersOnline}`,
+      ts.exitNode ? `Exit node: ${ts.exitNode}` : "",
+    ]
+      .filter(Boolean)
+      .join("\n");
+  }
 
   function costTooltip(cost: StatusData["awsCost"]): string {
     if (!cost) return "";
@@ -82,77 +129,127 @@
 
 {#if status}
   <div class="flex items-center gap-3">
+    <!-- Lugia Workers (tmux windows in session `main`) -->
+    {#if shown("lugia")}
+      <Group class="shrink-0">
+        <div
+          class="flex items-center gap-1 text-sm cursor-default"
+          title={lugiaTooltip(status.lugia)}
+        >
+          <i class="ti ti-terminal-2 {!status.lugia ? 'text-red-400' : status.lugia.workers > 0 ? 'text-violet-400' : 'text-zinc-500'}"></i>
+          {#if status.lugia}
+            <span class="font-mono font-bold">{status.lugia.workers}</span>
+            <span class="text-xs opacity-50">
+              {status.lugia.workers === 1 ? "worker" : "workers"}
+            </span>
+          {:else}
+            <span class="font-mono font-bold text-red-400">?</span>
+            <span class="text-xs opacity-50">lugia</span>
+          {/if}
+        </div>
+      </Group>
+    {/if}
+
+    <!-- Tailscale -->
+    {#if shown("tailscale")}
+      <Group class="shrink-0">
+        <div
+          class="flex items-center gap-1 text-sm cursor-default"
+          title={tailscaleTooltip(status.tailscale)}
+        >
+          <i class="ti {status.tailscale?.connected ? 'ti-shield-check text-emerald-400' : 'ti-shield-off text-red-400'}"></i>
+          {#if status.tailscale?.connected}
+            <span class="font-mono font-bold text-emerald-400">tailnet</span>
+            <span class="text-xs opacity-50">{status.tailscale.self}</span>
+          {:else}
+            <span class="font-mono font-bold text-red-400">offline</span>
+            <span class="text-xs opacity-50">
+              {status.tailscale?.backendState.toLowerCase() ?? "—"}
+            </span>
+          {/if}
+        </div>
+      </Group>
+    {/if}
+
     <!-- AWS Daily Spend -->
-    <Group class="shrink-0">
-      <div
-        class="flex items-center gap-1 text-sm cursor-default"
-        title={costTooltip(status.awsCost)}
-      >
-        <i class="ti ti-currency-dollar {status.awsCost && status.awsCost.today > 5 ? 'text-red-400' : 'text-emerald-400'}"></i>
-        {#if status.awsCost}
-          <span class="font-mono font-bold">${status.awsCost.today.toFixed(2)}</span>
-          <span class="text-xs opacity-50">yesterday</span>
-        {:else}
-          <span class="font-mono opacity-40">—</span>
-        {/if}
-      </div>
-    </Group>
+    {#if shown("aws")}
+      <Group class="shrink-0">
+        <div
+          class="flex items-center gap-1 text-sm cursor-default"
+          title={costTooltip(status.awsCost)}
+        >
+          <i class="ti ti-currency-dollar {status.awsCost && status.awsCost.today > 5 ? 'text-red-400' : 'text-emerald-400'}"></i>
+          {#if status.awsCost}
+            <span class="font-mono font-bold">${status.awsCost.today.toFixed(2)}</span>
+            <span class="text-xs opacity-50">yesterday</span>
+          {:else}
+            <span class="font-mono opacity-40">—</span>
+          {/if}
+        </div>
+      </Group>
+    {/if}
 
     <!-- Agent Runner Status -->
-    <Group class="shrink-0">
-      <div
-        class="flex items-center gap-1 text-sm cursor-default"
-        title={agentTooltip(status.agents)}
-      >
-        <i class="ti ti-robot {status.agents && status.agents.running.length > 0 ? 'text-blue-400' : status.agents && status.agents.failed > 0 ? 'text-red-400' : 'text-zinc-500'}"></i>
-        {#if status.agents}
-          <span class="font-mono font-bold">{status.agents.running.length}</span>
-          <span class="text-xs opacity-50">running</span>
-          {#if status.agents.failed > 0}
-            <span class="font-mono text-red-400 font-bold ml-1">{status.agents.failed}!</span>
+    {#if shown("agents")}
+      <Group class="shrink-0">
+        <div
+          class="flex items-center gap-1 text-sm cursor-default"
+          title={agentTooltip(status.agents)}
+        >
+          <i class="ti ti-robot {status.agents && status.agents.running.length > 0 ? 'text-blue-400' : status.agents && status.agents.failed > 0 ? 'text-red-400' : 'text-zinc-500'}"></i>
+          {#if status.agents}
+            <span class="font-mono font-bold">{status.agents.running.length}</span>
+            <span class="text-xs opacity-50">running</span>
+            {#if status.agents.failed > 0}
+              <span class="font-mono text-red-400 font-bold ml-1">{status.agents.failed}!</span>
+            {/if}
+          {:else}
+            <span class="font-mono opacity-40">—</span>
           {/if}
-        {:else}
-          <span class="font-mono opacity-40">—</span>
-        {/if}
-      </div>
-    </Group>
+        </div>
+      </Group>
+    {/if}
 
     <!-- Sites Down -->
-    <Group class="shrink-0">
-      <div
-        class="flex items-center gap-1 text-sm cursor-default"
-        title={siteTooltip(status.sites)}
-      >
-        <i class="ti ti-world {status.sites && status.sites.down.length > 0 ? 'text-red-400' : 'text-emerald-400'}"></i>
-        {#if status.sites}
-          {#if status.sites.down.length > 0}
-            <span class="font-mono font-bold text-red-400">{status.sites.down.length}</span>
-            <span class="text-xs text-red-400">down</span>
+    {#if shown("sites")}
+      <Group class="shrink-0">
+        <div
+          class="flex items-center gap-1 text-sm cursor-default"
+          title={siteTooltip(status.sites)}
+        >
+          <i class="ti ti-world {status.sites && status.sites.down.length > 0 ? 'text-red-400' : 'text-emerald-400'}"></i>
+          {#if status.sites}
+            {#if status.sites.down.length > 0}
+              <span class="font-mono font-bold text-red-400">{status.sites.down.length}</span>
+              <span class="text-xs text-red-400">down</span>
+            {:else}
+              <span class="font-mono font-bold text-emerald-400">{status.sites.total}</span>
+              <span class="text-xs opacity-50">up</span>
+            {/if}
           {:else}
-            <span class="font-mono font-bold text-emerald-400">{status.sites.total}</span>
-            <span class="text-xs opacity-50">up</span>
+            <span class="font-mono opacity-40">—</span>
           {/if}
-        {:else}
-          <span class="font-mono opacity-40">—</span>
-        {/if}
-      </div>
-    </Group>
+        </div>
+      </Group>
+    {/if}
 
     <!-- Active Users -->
-    <Group class="shrink-0">
-      <div
-        class="flex items-center gap-1 text-sm cursor-default"
-        title={status.analytics ? `${status.analytics.users} users / ${status.analytics.sessions} sessions (${status.analytics.period})` : ""}
-      >
-        <i class="ti ti-users text-violet-400"></i>
-        {#if status.analytics}
-          <span class="font-mono font-bold">{status.analytics.users}</span>
-          <span class="text-xs opacity-50">{status.analytics.period}</span>
-        {:else}
-          <span class="font-mono opacity-40">—</span>
-        {/if}
-      </div>
-    </Group>
+    {#if shown("analytics")}
+      <Group class="shrink-0">
+        <div
+          class="flex items-center gap-1 text-sm cursor-default"
+          title={status.analytics ? `${status.analytics.users} users / ${status.analytics.sessions} sessions (${status.analytics.period})` : ""}
+        >
+          <i class="ti ti-users text-violet-400"></i>
+          {#if status.analytics}
+            <span class="font-mono font-bold">{status.analytics.users}</span>
+            <span class="text-xs opacity-50">{status.analytics.period}</span>
+          {:else}
+            <span class="font-mono opacity-40">—</span>
+          {/if}
+        </div>
+      </Group>
+    {/if}
   </div>
 {:else}
   <div class="flex items-center gap-1 text-sm opacity-40">

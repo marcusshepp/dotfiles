@@ -27,3 +27,6 @@ id_ed25519*
 !.pi/agent/
 .pi/agent/*
 !.pi/agent/settings.json
+
+# Zebar bar build output — regenerate with `zbar build`
+windows-conf/zebar/sync-zebar/build/

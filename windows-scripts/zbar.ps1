@@ -147,8 +147,25 @@ switch ($Command) {
 
     'api' {
         switch ($Arg1) {
-            'stop'  { Get-Process -Name bun -ErrorAction SilentlyContinue | Where-Object { $_.Path -like '*bun*' } | Stop-Process -Force; Write-Host '  api stopped' }
-            'log'   { Invoke-RestMethod "$ApiBase/status" -TimeoutSec 5 | ConvertTo-Json -Depth 6 }
+            'stop' {
+                Get-CimInstance Win32_Process -Filter "Name='bun.exe'" |
+                    Where-Object { $_.CommandLine -like '*server.ts*' } |
+                    ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
+                Write-Host '  api stopped' -ForegroundColor Green
+            }
+            'log' { Invoke-RestMethod "$ApiBase/status" -TimeoutSec 8 | ConvertTo-Json -Depth 6 }
+            'why' {
+                # Which sources are failing, and why. A headless server logs to
+                # nowhere, so /status carries the reason for each dead tile.
+                $s = Invoke-RestMethod "$ApiBase/status" -TimeoutSec 8
+                Write-Host ''
+                foreach ($src in 'awsCost', 'sites', 'analytics', 'lugia', 'tailscale') {
+                    $err = $s.lastError.$src
+                    if ($err) { Write-Host ("  FAIL  {0,-11} {1}" -f $src, $err) -ForegroundColor Red }
+                    else      { Write-Host ("  ok    {0}" -f $src) -ForegroundColor DarkGray }
+                }
+                Write-Host ("`n  slow poll: {0}`n  fast poll: {1}`n" -f $s.lastUpdated, $s.fastUpdated) -ForegroundColor DarkGray
+            }
             default { Start-Process wscript.exe (Join-Path $ApiDir 'start.vbs') -WindowStyle Hidden; Write-Host '  api started on 9876' -ForegroundColor Green }
         }
     }
@@ -166,6 +183,7 @@ switch ($Command) {
     zbar tile                    list tile visibility
     zbar tile <name> [on|off]    toggle an ops tile (default: toggle)
     zbar api [start|stop|log]    the status API on port 9876
+    zbar api why                 which sources are failing, and why
 
 '@ -ForegroundColor Gray
     }

@@ -18,7 +18,15 @@ type Tiles = Record<string, boolean>;
 interface Status {
   awsCost: { today: number; month: number; forecast: number } | null;
   sites: { down: string[]; total: number; checked: number } | null;
-  analytics: { users: number; sessions: number; period: string } | null;
+  analytics: {
+    users: number;
+    newUsers: number;
+    sessions: number;
+    pageviews: number;
+    realtimeUsers: number | null;
+    period: string;
+  } | null;
+  lastError?: Record<string, string | null>;
   lugia: { workers: number; names: string[]; session: string; reachable: boolean } | null;
   tailscale: {
     connected: boolean;
@@ -266,13 +274,26 @@ function renderCenter(): string {
   // --- Analytics -----------------------------------------------------
   if (tiles.analytics) {
     const an = status.analytics;
+    const detail = an
+      ? [
+          `syncgr.com — last ${an.period}`,
+          "",
+          `Users:      ${an.users} (${an.newUsers} new)`,
+          `Sessions:   ${an.sessions}`,
+          `Pageviews:  ${an.pageviews}`,
+          an.realtimeUsers != null ? `On site now: ${an.realtimeUsers}` : "",
+        ]
+          .filter(Boolean)
+          .join("\n")
+      : `analytics unavailable — ${status.lastError?.analytics ?? "no reason reported"}`;
     parts.push(
       pill({
         icon: "ti-users",
-        tone: "info",
+        tone: an ? "info" : "bad",
         val: an ? String(an.users) : "—",
         lbl: an?.period ?? "30d",
-        title: an ? `${an.users} users / ${an.sessions} sessions (${an.period})` : "analytics unavailable",
+        cls: an ? "" : "alert",
+        title: detail,
         tile: "analytics",
       })
     );

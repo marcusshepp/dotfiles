@@ -29,7 +29,11 @@ upstream can never stall the bar.
 | `tailscale` | `tailscale status --json` → `BackendState == "Running"` | 15s |
 | `aws` | Cost Explorer, yesterday's blended cost | 5min |
 | `sites` | HEAD sweep of the monitored client sites | 5min |
-| `analytics` | GA4 via portal-api | 5min |
+| `analytics` | `platform-api.syncgr.com/v1/analytics?portalId=sync&days=30` (GA4 + GSC) | 5min |
+
+Note the analytics host: the legacy `portal-api.syncgr.com/admin/*` gateway
+routes are gone and answer 404. Admin surfaces live on the Hono platform API
+under `/v1/*`.
 
 Hover any tile for detail — the Lugia tooltip lists every tmux window by name.
 
@@ -48,6 +52,13 @@ Three equivalent ways; all persist to `zebar-api/tiles.json` and apply to
 
 The switcher is inline rather than a dropdown on purpose: a Zebar widget window
 is exactly as tall as the bar, so anything drawn below it is clipped away.
+
+## When a tile shows `—`
+
+`zbar api why` — per-source ok/FAIL plus the reason. The status API runs
+headless via `start.vbs` so its console goes nowhere; every fetch records why
+it failed into `lastError`, which rides along in `GET /status` and lands in the
+tile's own tooltip. Check that before editing bar code.
 
 ## Building
 

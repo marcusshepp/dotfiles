@@ -214,13 +214,15 @@ function renderCenter(): string {
           .filter(Boolean)
           .join("\n")
       : "tailscale status unavailable";
+    // Quiet when healthy — a bare dot, with the node name in the tooltip.
+    // Only shouts (text + alert border + pulse) when the tailnet is down.
     parts.push(
       pill({
         dot: up ? "up" : "down",
         tone: up ? "ok" : "bad",
-        val: up ? "tailnet" : "offline",
-        lbl: up ? t!.self : t?.backendState.toLowerCase(),
-        cls: up ? "live" : "alert",
+        val: up ? undefined : "offline",
+        lbl: up ? undefined : t?.backendState.toLowerCase(),
+        cls: up ? "mini live" : "alert",
         title: detail,
         tile: "tailscale",
       })

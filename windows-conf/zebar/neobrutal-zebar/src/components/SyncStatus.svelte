@@ -126,11 +126,9 @@
           class="flex items-center gap-1 text-sm cursor-default"
           title={tailscaleTooltip(status.tailscale)}
         >
+          <!-- Quiet when healthy — icon only, node name in the tooltip. -->
           <i class="ti {status.tailscale?.connected ? 'ti-shield-check text-emerald-400' : 'ti-shield-off text-red-400'}"></i>
-          {#if status.tailscale?.connected}
-            <span class="font-mono font-bold text-emerald-400">tailnet</span>
-            <span class="text-xs opacity-50">{status.tailscale.self}</span>
-          {:else}
+          {#if !status.tailscale?.connected}
             <span class="font-mono font-bold text-red-400">offline</span>
             <span class="text-xs opacity-50">
               {status.tailscale?.backendState.toLowerCase() ?? "—"}

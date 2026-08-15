@@ -33,6 +33,10 @@ upstream can never stall the bar.
 
 Hover any tile for detail — the Lugia tooltip lists every tmux window by name.
 
+`tailscale` is deliberately quiet: a bare dot while the tailnet is up, with the
+node name and peer count in the tooltip. It only grows text (`offline`, alert
+border, pulsing dot) when the connection drops.
+
 ## Toggling tiles
 
 Three equivalent ways; all persist to `zebar-api/tiles.json` and apply to

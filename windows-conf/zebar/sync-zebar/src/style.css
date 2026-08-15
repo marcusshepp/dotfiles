@@ -114,6 +114,12 @@ body {
   opacity: 0.45;
 }
 
+/* Icon- or dot-only pill: just enough box to read as a pill. */
+.pill.mini {
+  padding: 0 7px;
+  gap: 0;
+}
+
 /* state accents */
 .ok {
   color: var(--foam);

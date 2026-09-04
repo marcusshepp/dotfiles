@@ -3,12 +3,22 @@ import * as zebar from "zebar";
 
 const API = "http://127.0.0.1:9876";
 
+/**
+ * Every call to the status API is a POST on purpose. Zebar registers a
+ * service worker that intercepts cross-origin GETs for its response cache
+ * and awaits a SET_CONFIG message before answering; once that worker has
+ * been idle-killed and restarted it never gets the message again and every
+ * GET hangs forever ("status api…" spinner). Non-GET requests fall through
+ * to the network untouched. Found 2026-09-04.
+ */
+const api = (path: string) => fetch(`${API}${path}`, { method: "POST" });
+
 /** Tiles that live in the centre ops cluster and can be switched off. */
-const TILE_ORDER = ["lugia", "tailscale", "aws", "sites", "analytics"] as const;
+const TILE_ORDER = ["lugia", "iron-tower", "tailscale", "sites", "analytics"] as const;
 const TILE_LABELS: Record<string, string> = {
   lugia: "Lugia workers",
+  "iron-tower": "Iron Tower workers",
   tailscale: "Tailscale",
-  aws: "AWS spend",
   sites: "Site health",
   analytics: "Analytics",
 };
@@ -16,7 +26,7 @@ const TILE_LABELS: Record<string, string> = {
 type Tiles = Record<string, boolean>;
 
 interface Status {
-  awsCost: { today: number; month: number; forecast: number } | null;
+  foregroundWindow: { handle: number; title: string } | null;
   sites: { down: string[]; total: number; checked: number } | null;
   analytics: {
     users: number;
@@ -28,6 +38,7 @@ interface Status {
   } | null;
   lastError?: Record<string, string | null>;
   lugia: { workers: number; names: string[]; session: string; reachable: boolean } | null;
+  ironTower: { workers: number; names: string[]; session: string; reachable: boolean } | null;
   tailscale: {
     connected: boolean;
     backendState: string;
@@ -134,8 +145,13 @@ function renderLeft(): string {
     .join("");
 
   const win = focusedWindow(wm.focusedWorkspace);
+  const liveTerminalTitle =
+    win?.processName === "WindowsTerminal" &&
+    status?.foregroundWindow?.handle === win.handle
+      ? status.foregroundWindow.title
+      : null;
   const title = win
-    ? `<div class="pill"><i class="ti ti-app-window idle"></i><span class="title">${esc(win.title)}</span></div>`
+    ? `<div class="pill"><i class="ti ti-app-window idle"></i><span class="title">${esc(liveTerminalTitle ?? win.title)}</span></div>`
     : "";
 
   return `
@@ -184,10 +200,9 @@ function renderCenter(): string {
       parts.push(
         pill({
           icon: "ti-terminal-2",
-          tone: "bad",
+          tone: "idle",
           val: "?",
           lbl: "lugia",
-          cls: "alert",
           title: "Lugia unreachable — ssh lugia@lugia failed",
           tile: "lugia",
         })
@@ -199,10 +214,40 @@ function renderCenter(): string {
           icon: "ti-terminal-2",
           tone: l.workers > 0 ? "info" : "idle",
           val: String(l.workers),
-          lbl: l.workers === 1 ? "worker" : "workers",
+          lbl: "lugia",
           cls: l.workers > 0 ? "live" : "",
           title: `Lugia tmux:${l.session} — ${l.workers} window${l.workers === 1 ? "" : "s"}\n${names}`,
           tile: "lugia",
+        })
+      );
+    }
+  }
+
+  // --- Iron Tower workers --------------------------------------------
+  if (tiles["iron-tower"]) {
+    const it = status.ironTower;
+    if (!it) {
+      parts.push(
+        pill({
+          icon: "ti-server-2",
+          tone: "idle",
+          val: "?",
+          lbl: "iron tower",
+          title: "Iron Tower unreachable — ssh marcusshep@iron-tower failed",
+          tile: "iron-tower",
+        })
+      );
+    } else {
+      const names = it.names.length ? it.names.map((n) => `▸ ${n}`).join("\n") : "no workers";
+      parts.push(
+        pill({
+          icon: "ti-server-2",
+          tone: it.workers > 0 ? "info" : "idle",
+          val: String(it.workers),
+          lbl: "iron tower",
+          cls: it.workers > 0 ? "live" : "",
+          title: `Iron Tower Agent Deck — ${it.workers} session${it.workers === 1 ? "" : "s"}\n${names}`,
+          tile: "iron-tower",
         })
       );
     }
@@ -222,34 +267,17 @@ function renderCenter(): string {
           .filter(Boolean)
           .join("\n")
       : "tailscale status unavailable";
-    // Quiet when healthy — a bare dot, with the node name in the tooltip.
-    // Only shouts (text + alert border + pulse) when the tailnet is down.
+    // Quiet in both states: connection trouble remains readable without
+    // turning the entire bar into a red attention surface.
     parts.push(
       pill({
-        dot: up ? "up" : "down",
-        tone: up ? "ok" : "bad",
+        dot: up ? "up" : null,
+        tone: up ? "ok" : "idle",
         val: up ? undefined : "offline",
         lbl: up ? undefined : t?.backendState.toLowerCase(),
-        cls: up ? "mini live" : "alert",
+        cls: up ? "mini live" : "",
         title: detail,
         tile: "tailscale",
-      })
-    );
-  }
-
-  // --- AWS spend -----------------------------------------------------
-  if (tiles.aws) {
-    const c = status.awsCost;
-    parts.push(
-      pill({
-        icon: "ti-currency-dollar",
-        tone: c ? (c.today > 5 ? "warn" : "ok") : "idle",
-        val: c ? `$${c.today.toFixed(2)}` : "—",
-        lbl: "yest",
-        title: c
-          ? `Yesterday: $${c.today.toFixed(2)}\nMonth to date: $${c.month.toFixed(2)}\nForecast: $${c.forecast.toFixed(0)}`
-          : "AWS Cost Explorer unavailable",
-        tile: "aws",
       })
     );
   }
@@ -261,10 +289,9 @@ function renderCenter(): string {
     parts.push(
       pill({
         icon: "ti-world",
-        tone: down > 0 ? "bad" : "ok",
+        tone: down > 0 ? "idle" : "ok",
         val: s ? (down > 0 ? String(down) : String(s.total)) : "—",
         lbl: down > 0 ? "down" : "up",
-        cls: down > 0 ? "alert" : "",
         title: s ? [`${s.checked}/${s.total} checked`, "", ...(down ? s.down.map((d) => `✖ ${d}`) : ["All sites healthy"])].join("\n") : "",
         tile: "sites",
       })
@@ -289,10 +316,9 @@ function renderCenter(): string {
     parts.push(
       pill({
         icon: "ti-users",
-        tone: an ? "info" : "bad",
+        tone: an ? "info" : "idle",
         val: an ? String(an.users) : "—",
         lbl: an?.period ?? "30d",
-        cls: an ? "" : "alert",
         title: detail,
         tile: "analytics",
       })
@@ -398,7 +424,7 @@ function render() {
 
 async function setTile(id: string, action: "toggle" | "on" | "off") {
   try {
-    const res = await fetch(`${API}/tiles/${id}/${action}`);
+    const res = await api(`/tiles/${id}/${action}`);
     if (res.ok) tiles = await res.json();
   } catch {
     // API down — flip locally so the bar still responds.
@@ -458,7 +484,7 @@ document.addEventListener("keydown", (e) => {
 
 async function poll() {
   try {
-    const res = await fetch(`${API}/status?_=${Date.now()}`);
+    const res = await api(`/status?_=${Date.now()}`);
     if (res.ok) {
       status = await res.json();
       if (status?.tiles) tiles = { ...tiles, ...status.tiles };
@@ -467,8 +493,8 @@ async function poll() {
     // Status API is optional — the bar keeps working without it.
   }
   render();
-  // Retry fast until the first success, then settle into a steady poll.
-  setTimeout(poll, status ? 5_000 : 2_000);
+  // The live foreground title keeps Windows Terminal tab switches accurate.
+  setTimeout(poll, status ? 500 : 2_000);
 }
 
 const providers = zebar.createProviderGroup({

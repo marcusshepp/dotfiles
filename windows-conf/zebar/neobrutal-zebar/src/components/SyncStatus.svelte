@@ -18,10 +18,10 @@
   }
 
   interface StatusData {
-    awsCost: { today: number; month: number; forecast: number } | null;
     sites: { down: string[]; total: number; checked: number } | null;
     analytics: { users: number; sessions: number; period: string } | null;
     lugia: LugiaInfo | null;
+    ironTower: LugiaInfo | null;
     tailscale: TailscaleInfo | null;
     tiles: Record<string, boolean>;
     lastUpdated: string;
@@ -56,11 +56,6 @@
     ]
       .filter(Boolean)
       .join("\n");
-  }
-
-  function costTooltip(cost: StatusData["awsCost"]): string {
-    if (!cost) return "";
-    return `Yesterday: $${cost.today.toFixed(2)}\nMTD: $${cost.month.toFixed(2)}\nForecast: $${cost.forecast.toFixed(0)}`;
   }
 
   function siteTooltip(sites: StatusData["sites"]): string {
@@ -105,15 +100,34 @@
           class="flex items-center gap-1 text-sm cursor-default"
           title={lugiaTooltip(status.lugia)}
         >
-          <i class="ti ti-terminal-2 {!status.lugia ? 'text-red-400' : status.lugia.workers > 0 ? 'text-violet-400' : 'text-zinc-500'}"></i>
+          <i class="ti ti-terminal-2 {status.lugia?.workers ? 'text-violet-400' : 'text-zinc-500'}"></i>
           {#if status.lugia}
             <span class="font-mono font-bold">{status.lugia.workers}</span>
             <span class="text-xs opacity-50">
-              {status.lugia.workers === 1 ? "worker" : "workers"}
+              lugia
             </span>
           {:else}
-            <span class="font-mono font-bold text-red-400">?</span>
+            <span class="font-mono opacity-50">?</span>
             <span class="text-xs opacity-50">lugia</span>
+          {/if}
+        </div>
+      </Group>
+    {/if}
+
+    <!-- Iron Tower Workers (Agent Deck tmux sessions) -->
+    {#if shown("iron-tower")}
+      <Group class="shrink-0">
+        <div
+          class="flex items-center gap-1 text-sm cursor-default"
+          title={status.ironTower ? `Agent Deck — ${status.ironTower.workers} sessions\n\n${status.ironTower.names.map((n) => `▶ ${n}`).join("\n") || "no workers"}` : "Iron Tower unreachable — ssh marcusshep@iron-tower failed"}
+        >
+          <i class="ti ti-server-2 {status.ironTower?.workers ? 'text-violet-400' : 'text-zinc-500'}"></i>
+          {#if status.ironTower}
+            <span class="font-mono font-bold">{status.ironTower.workers}</span>
+            <span class="text-xs opacity-50">iron tower</span>
+          {:else}
+            <span class="font-mono opacity-50">?</span>
+            <span class="text-xs opacity-50">iron tower</span>
           {/if}
         </div>
       </Group>
@@ -127,30 +141,12 @@
           title={tailscaleTooltip(status.tailscale)}
         >
           <!-- Quiet when healthy — icon only, node name in the tooltip. -->
-          <i class="ti {status.tailscale?.connected ? 'ti-shield-check text-emerald-400' : 'ti-shield-off text-red-400'}"></i>
+          <i class="ti {status.tailscale?.connected ? 'ti-shield-check text-emerald-400' : 'ti-shield-off text-zinc-500'}"></i>
           {#if !status.tailscale?.connected}
-            <span class="font-mono font-bold text-red-400">offline</span>
+            <span class="font-mono opacity-50">offline</span>
             <span class="text-xs opacity-50">
               {status.tailscale?.backendState.toLowerCase() ?? "—"}
             </span>
-          {/if}
-        </div>
-      </Group>
-    {/if}
-
-    <!-- AWS Daily Spend -->
-    {#if shown("aws")}
-      <Group class="shrink-0">
-        <div
-          class="flex items-center gap-1 text-sm cursor-default"
-          title={costTooltip(status.awsCost)}
-        >
-          <i class="ti ti-currency-dollar {status.awsCost && status.awsCost.today > 5 ? 'text-red-400' : 'text-emerald-400'}"></i>
-          {#if status.awsCost}
-            <span class="font-mono font-bold">${status.awsCost.today.toFixed(2)}</span>
-            <span class="text-xs opacity-50">yesterday</span>
-          {:else}
-            <span class="font-mono opacity-40">—</span>
           {/if}
         </div>
       </Group>
@@ -163,11 +159,11 @@
           class="flex items-center gap-1 text-sm cursor-default"
           title={siteTooltip(status.sites)}
         >
-          <i class="ti ti-world {status.sites && status.sites.down.length > 0 ? 'text-red-400' : 'text-emerald-400'}"></i>
+          <i class="ti ti-world {status.sites && status.sites.down.length > 0 ? 'text-zinc-500' : 'text-emerald-400'}"></i>
           {#if status.sites}
             {#if status.sites.down.length > 0}
-              <span class="font-mono font-bold text-red-400">{status.sites.down.length}</span>
-              <span class="text-xs text-red-400">down</span>
+              <span class="font-mono opacity-50">{status.sites.down.length}</span>
+              <span class="text-xs opacity-50">down</span>
             {:else}
               <span class="font-mono font-bold text-emerald-400">{status.sites.total}</span>
               <span class="text-xs opacity-50">up</span>

@@ -7,5 +7,5 @@ del /q .stop 2>nul
 if exist .stop goto :eof
 "C:\Users\marcu\.bun\bin\bun.exe" run server.ts >> api.log 2>&1
 if exist .stop goto :eof
-timeout /t 5 /nobreak >nul
+ping -n 6 127.0.0.1 >nul
 goto loop

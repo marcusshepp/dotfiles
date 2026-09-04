@@ -11,7 +11,7 @@
   zbar list
   zbar use sync-zebar
   zbar use neobrutal-zebar
-  zbar tile aws off
+  zbar tile sites off
   zbar restart
 #>
 [CmdletBinding()]
@@ -148,18 +148,21 @@ switch ($Command) {
     'api' {
         switch ($Arg1) {
             'stop' {
+                # run.cmd supervises bun and restarts it on exit; the .stop
+                # sentinel tells the loop to end instead of resurrecting it.
+                New-Item -ItemType File -Force (Join-Path $ApiDir '.stop') | Out-Null
                 Get-CimInstance Win32_Process -Filter "Name='bun.exe'" |
                     Where-Object { $_.CommandLine -like '*server.ts*' } |
                     ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
                 Write-Host '  api stopped' -ForegroundColor Green
             }
-            'log' { Invoke-RestMethod "$ApiBase/status" -TimeoutSec 8 | ConvertTo-Json -Depth 6 }
+            'log' { Get-Content (Join-Path $ApiDir 'api.log') -Tail 40 }
             'why' {
                 # Which sources are failing, and why. A headless server logs to
                 # nowhere, so /status carries the reason for each dead tile.
                 $s = Invoke-RestMethod "$ApiBase/status" -TimeoutSec 8
                 Write-Host ''
-                foreach ($src in 'awsCost', 'sites', 'analytics', 'lugia', 'tailscale') {
+                foreach ($src in 'sites', 'analytics', 'lugia', 'ironTower', 'tailscale') {
                     $err = $s.lastError.$src
                     if ($err) { Write-Host ("  FAIL  {0,-11} {1}" -f $src, $err) -ForegroundColor Red }
                     else      { Write-Host ("  ok    {0}" -f $src) -ForegroundColor DarkGray }

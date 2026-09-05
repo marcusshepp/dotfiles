@@ -246,6 +246,34 @@ function it {
 }
 
 # -----------------------------------------------------------------------------
+# Charmander  (Tailscale: charmander / 100.103.141.42, LAN 192.168.4.48) — Hermes host
+# -----------------------------------------------------------------------------
+# ch          → attach tmux "hermes" at ~ running the Hermes CLI (starts it if new)
+# ch shell    → attach tmux "main" as a plain shell at ~
+# ch deck     → open the Agent Deck dashboard
+# ch gateway  → follow the hermes-gateway (Slack) service log
+# ch restart  → restart the hermes-gateway service
+# ch list     → list tmux sessions + gateway status
+# ch wake     → send Wake-on-LAN from Iron Tower (box is on the same LAN)
+
+function ch {
+    param([string]$Mode = "")
+
+    $remoteEnv = "export PATH=/home/sir-code-alot/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin; cd ~; "
+    $reclaim = "tmux ls >/dev/null 2>&1 || { pkill -USR1 -o -P 1 -f '^tmux'; sleep 1; }; "
+
+    switch ($Mode) {
+        "shell"   { ssh -t charmander-ts "$remoteEnv$reclaim tmux new-session -A -s main -c ~" }
+        "deck"    { ssh -t charmander-ts "$remoteEnv agent-deck" }
+        "gateway" { ssh -t charmander-ts "journalctl --user -u hermes-gateway -n 50 -f" }
+        "restart" { ssh charmander-ts "systemctl --user restart hermes-gateway; sleep 2; systemctl --user is-active hermes-gateway" }
+        "list"    { ssh charmander-ts "tmux ls 2>/dev/null || echo 'No tmux sessions'; echo '--- hermes-gateway ---'; systemctl --user is-active hermes-gateway" }
+        "wake"    { ssh marcusshep@iron-tower "~/.local/bin/wake-charmander" }
+        default   { ssh -t charmander-ts "$remoteEnv$reclaim tmux new-session -A -s hermes -c ~ '/home/sir-code-alot/.local/bin/hermes'" }
+    }
+}
+
+# -----------------------------------------------------------------------------
 # Startup
 # -----------------------------------------------------------------------------
 
